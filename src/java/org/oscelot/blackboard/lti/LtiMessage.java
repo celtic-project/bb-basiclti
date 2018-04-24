@@ -27,8 +27,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Iterator;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.UUID;
 
 import java.io.IOException;
@@ -238,8 +236,8 @@ public class LtiMessage {
             try {
                 contextId = CourseDbLoader.Default.getInstance().loadSystemCourse().getId().toExternalString();
                 resourceId = contextId;
-            } catch (PersistenceException ex) {
-                Logger.getLogger(LtiMessage.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (PersistenceException e) {
+                B2Context.log(true, null, (Object) e);
             }
             if (module != null) {
                 resourceId = Constants.PREFIX_MODULE + module.getId().toExternalString();
@@ -498,11 +496,11 @@ public class LtiMessage {
             oAuthMessage.addRequiredParameters(oAuthAccessor);
             this.params = oAuthMessage.getParameters();
         } catch (OAuthException e) {
-            Logger.getLogger(LtiMessage.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
         } catch (IOException e) {
-            Logger.getLogger(LtiMessage.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
         } catch (URISyntaxException e) {
-            Logger.getLogger(LtiMessage.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
         }
 
     }

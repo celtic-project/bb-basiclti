@@ -21,8 +21,6 @@
 package org.oscelot.blackboard.basiclti.services;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jdom.Element;
 
@@ -145,7 +143,7 @@ public class Outcome implements Action {
                 if (ok) {
                     description = b2Context.getResourceString("svc.codeminor.outcome.deleted");
                 } else {
-                    Logger.getLogger(Outcome.class.getName()).log(Level.SEVERE, "Error in Gradebook.updateGradebook");
+                    B2Context.log(true, "Error in Gradebook.updateGradebook");
                     description = b2Context.getResourceString("ext.codeminor.system");
                 }
             } else if (actionName.equals(Constants.SVC_OUTCOME_READ)) {

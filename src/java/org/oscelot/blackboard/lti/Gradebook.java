@@ -21,8 +21,6 @@
 package org.oscelot.blackboard.lti;
 
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Locale;
 
 import blackboard.base.BbList;
@@ -152,10 +150,10 @@ public class Gradebook {
                         scoredbpersister.persist(score);
                     }
                 } catch (ValidationException e) {
-                    Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+                    B2Context.log(true, null, (Object) e);
                     ok = false;
                 } catch (PersistenceException e) {
-                    Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+                    B2Context.log(true, null, (Object) e);
                     ok = false;
                 }
             }
@@ -201,7 +199,7 @@ public class Gradebook {
             lineitemdbpersister = (LineitemDbPersister) bbPm.getPersister(LineitemDbPersister.TYPE);
             lineitemLoader = (LineitemDbLoader) bbPm.getLoader(LineitemDbLoader.TYPE);
         } catch (PersistenceException e) {
-            Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
             ok = false;
         }
         if (ok) {
@@ -266,10 +264,10 @@ public class Gradebook {
                         OutcomeDefinitionCategoryDbLoader odcLoader = (OutcomeDefinitionCategoryDbLoader) bbPm.getLoader("OutcomeDefinitionCategoryDbLoader");
                         category = odcLoader.loadByCourseIdAndTitle(courseId, b2Context.getResourceString("ext.gradecenter.category.title"));
                     } catch (KeyNotFoundException e) {
-                        Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+                        B2Context.log(true, null, (Object) e);
                         category = null;
                     } catch (PersistenceException e) {
-                        Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+                        B2Context.log(true, null, (Object) e);
                         category = null;
                     }
                     if (category == null) {
@@ -313,7 +311,7 @@ public class Gradebook {
                         OutcomeDefinitionDbPersister odPersister = (OutcomeDefinitionDbPersister) bbPm.getPersister("OutcomeDefinitionDbPersister");
                         odPersister.persist(def);
                     } catch (KeyNotFoundException e) {
-                        Logger.getLogger(Gradebook.class.getName()).log(Level.WARNING, e.getMessage(), e);
+                        B2Context.log(false, e.getMessage(), (Object) e);
                     }
                     lineitem = new Lineitem(def);
                     lineitem.setType(b2Context.getResourceString("ext.gradecenter.category.title"));
@@ -321,7 +319,7 @@ public class Gradebook {
                     lineitem.validate();
                     lineitemdbpersister.persist(lineitem);
                 } catch (ValidationException e) {
-                    Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+                    B2Context.log(true, null, (Object) e);
                     ok = false;
                 } catch (PersistenceException e) {
                 }
@@ -361,8 +359,8 @@ public class Gradebook {
                 CourseMembershipDbLoader coursemembershipdbloader = (CourseMembershipDbLoader) bbPm.getLoader(CourseMembershipDbLoader.TYPE);
                 coursemembership = coursemembershipdbloader.loadByCourseAndUserId(lineitem.getCourseId(), userId);
                 ok = coursemembership.getRole().equals(CourseMembership.Role.STUDENT);
-            } catch (PersistenceException ex) {
-                Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (PersistenceException e) {
+                B2Context.log(true, null, (Object) e);
                 ok = false;
             }
             if (ok) {
@@ -394,7 +392,7 @@ public class Gradebook {
             Id id = bbPm.generateId(Lineitem.LINEITEM_DATA_TYPE, lineitemId);
             lineitem = loadColumn(lineitemLoader, id);
         } catch (PersistenceException e) {
-            Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
             lineitem = null;
         }
 
@@ -408,10 +406,10 @@ public class Gradebook {
         try {
             lineitem = lineitemLoader.loadById(id);
         } catch (KeyNotFoundException e) {
-            Logger.getLogger(Gradebook.class.getName()).log(Level.INFO, null, e);
+            B2Context.log(false, null, (Object) e);
             lineitem = null;
         } catch (PersistenceException e) {
-            Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
             lineitem = null;
         }
 
@@ -429,10 +427,10 @@ public class Gradebook {
             } else {
             }
         } catch (KeyNotFoundException e) {
-            Logger.getLogger(Gradebook.class.getName()).log(Level.INFO, null, e);
+            B2Context.log(false, null, (Object) e);
             lineitem = null;
         } catch (PersistenceException e) {
-            Logger.getLogger(Gradebook.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
             lineitem = null;
         }
 

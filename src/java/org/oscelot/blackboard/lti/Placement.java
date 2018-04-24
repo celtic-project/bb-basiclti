@@ -20,9 +20,6 @@
  */
 package org.oscelot.blackboard.lti;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import blackboard.data.navigation.NavigationApplication;
 import blackboard.data.navigation.NavigationItem;
 import blackboard.data.navigation.ToolSettings;
@@ -281,9 +278,9 @@ public class Placement {
             this.navChanged = false;
             PersistenceServiceFactory.getInstance().getDbPersistenceManager().refreshLoader("PlugInDbLoader");
         } catch (PersistenceException e) {
-            Logger.getLogger(Placement.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
         } catch (ValidationException e) {
-            Logger.getLogger(Placement.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
         }
 
     }

@@ -26,8 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Properties;
@@ -951,9 +949,9 @@ public class Utils {
             sb.setExpandEntities(false);
             xmlDoc = sb.build(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
         } catch (JDOMException e) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
         } catch (IOException e) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
         }
 
         return xmlDoc;
@@ -1113,7 +1111,7 @@ public class Utils {
                 str = fileGet.getResponseBodyAsString();
             }
         } catch (IOException e) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
             str = "";
         }
         if (fileGet != null) {
@@ -1621,8 +1619,8 @@ public class Utils {
                         }
                     } while (nodeId != null);
                 }
-            } catch (PersistenceException ex) {
-                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (PersistenceException e) {
+                B2Context.log(true, null, (Object) e);
             }
             if (orgs.length() > 1) {
                 org = orgs.substring(1, orgs.length() - 1);
@@ -1656,8 +1654,8 @@ public class Utils {
                     Node node = nodeManager.loadNodeById(nodeId);
                     primary = node.getName();
                 }
-            } catch (PersistenceException ex) {
-                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (PersistenceException e) {
+                B2Context.log(true, null, (Object) e);
             }
         }
 
@@ -1694,8 +1692,8 @@ public class Utils {
                     contexts.append(",").append(urlEncode(contextId));
                 }
                 contextIds = contexts.substring(1);
-            } catch (PersistenceException ex) {
-                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (PersistenceException e) {
+                B2Context.log(true, null, (Object) e);
             }
         }
 

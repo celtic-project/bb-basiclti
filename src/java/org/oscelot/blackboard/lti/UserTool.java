@@ -31,8 +31,6 @@ import blackboard.persist.navigation.PaletteItemDbPersister;
 import blackboard.persist.PersistenceException;
 
 import com.spvsoftwareproducts.blackboard.utils.B2Context;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class UserTool extends Placement {
 

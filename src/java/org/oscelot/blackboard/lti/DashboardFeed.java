@@ -45,8 +45,6 @@ import org.oscelot.blackboard.utils.StringCacheFile;
 
 import com.spvsoftwareproducts.blackboard.utils.B2Context;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.Header;
@@ -204,7 +202,7 @@ public class DashboardFeed {
                 }
             }
         } catch (IOException e) {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, e);
+            B2Context.log(true, null, (Object) e);
             fileContent = "";
         }
         httpPost.releaseConnection();
