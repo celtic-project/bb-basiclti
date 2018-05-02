@@ -35,6 +35,7 @@
 <%@taglib uri="/bbNG" prefix="bbNG" %>
 <%
   B2Context b2Context = new B2Context(request);
+  Utils.checkInheritSettings(b2Context);
 
   Module module = (Module)request.getAttribute("blackboard.portal.data.Module");
   String courseId = b2Context.getRequestParameter("course_id", "");

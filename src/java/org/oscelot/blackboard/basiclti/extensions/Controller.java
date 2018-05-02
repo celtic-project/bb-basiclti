@@ -160,12 +160,7 @@ public class Controller extends HttpServlet {
             this.b2Context.setCourseId(courseId);
             this.b2Context.setContentId(contentId);
             this.b2Context.setGroupId(groupId);
-            boolean nodeSupport = this.b2Context.getSetting(Constants.NODE_CONFIGURE, Constants.DATA_FALSE).equals(Constants.DATA_TRUE);
-            if (nodeSupport) {
-                this.b2Context.setInheritSettings(this.b2Context.getSetting(Constants.INHERIT_SETTINGS, Constants.DATA_FALSE).equals(Constants.DATA_TRUE));
-            } else {
-                this.b2Context.clearNode();
-            }
+            Utils.checkInheritSettings(this.b2Context);
             this.tool = Utils.getTool(this.b2Context, toolId);
             ok = key.equals(tool.getLaunchGUID());
             if (!ok) {

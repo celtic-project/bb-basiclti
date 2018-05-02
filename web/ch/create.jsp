@@ -50,6 +50,7 @@
     Utils.checkForm(request, formName);
 
     B2Context b2Context = new B2Context(request);
+    Utils.checkInheritSettings(b2Context);
     Utils.checkCourse(b2Context);
     b2Context.setIgnoreContentContext(true);
     ToolList toolList = new ToolList(b2Context);

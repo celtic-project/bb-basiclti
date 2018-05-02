@@ -34,12 +34,7 @@
     String moduleId = Utils.checkForModule(request);
     Module module = Utils.getModule(moduleId);
     B2Context b2Context = new B2Context(request);
-    boolean nodeSupport = b2Context.getSetting(Constants.NODE_CONFIGURE, Constants.DATA_FALSE).equals(Constants.DATA_TRUE);
-    if (nodeSupport) {
-        b2Context.setInheritSettings(b2Context.getSetting(Constants.INHERIT_SETTINGS, Constants.DATA_FALSE).equals(Constants.DATA_TRUE));
-    } else {
-        b2Context.clearNode();
-    }
+    Utils.checkInheritSettings(b2Context);
     pageContext.setAttribute("bundle", b2Context.getResourceStrings());
     String toolId = b2Context.getRequestParameter(Constants.TOOL_ID,
             b2Context.getSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_ID, ""));

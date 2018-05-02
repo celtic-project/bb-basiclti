@@ -27,6 +27,7 @@
         errorPage="error.jsp"%>
 <%
     B2Context b2Context = new B2Context(request);
+    Utils.checkInheritSettings(b2Context);
 
     String icon;
     String toolId = b2Context.getSetting(false, true,

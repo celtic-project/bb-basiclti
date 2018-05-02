@@ -32,36 +32,37 @@
         errorPage="error.jsp"%>
 <%@taglib uri="/bbNG" prefix="bbNG"%>
 <%
-  Utils.checkForModule(request);
-  B2Context b2Context = new B2Context(request);
-  String contentId = b2Context.getRequestParameter("content_id", "");
-  String toolId = b2Context.getRequestParameter(Constants.TOOL_ID, b2Context.getSetting(false, true, "tool.id", ""));
-  Tool tool = Utils.getTool(b2Context, toolId);
-  String toolName = tool.getName();
-  if (contentId.length() > 0) {
-    BbPersistenceManager bbPm = PersistenceServiceFactory.getInstance().getDbPersistenceManager();
-    ContentDbLoader courseDocumentLoader = (ContentDbLoader)bbPm.getLoader(ContentDbLoader.TYPE);
-    Id id = bbPm.generateId(Content.DATA_TYPE, contentId);
-    Content content = courseDocumentLoader.loadById(id);
-    toolName = content.getTitle();
-  }
+    Utils.checkForModule(request);
+    B2Context b2Context = new B2Context(request);
+    Utils.checkInheritSettings(b2Context);
+    String contentId = b2Context.getRequestParameter("content_id", "");
+    String toolId = b2Context.getRequestParameter(Constants.TOOL_ID, b2Context.getSetting(false, true, "tool.id", ""));
+    Tool tool = Utils.getTool(b2Context, toolId);
+    String toolName = tool.getName();
+    if (contentId.length() > 0) {
+        BbPersistenceManager bbPm = PersistenceServiceFactory.getInstance().getDbPersistenceManager();
+        ContentDbLoader courseDocumentLoader = (ContentDbLoader) bbPm.getLoader(ContentDbLoader.TYPE);
+        Id id = bbPm.generateId(Content.DATA_TYPE, contentId);
+        Content content = courseDocumentLoader.loadById(id);
+        toolName = content.getTitle();
+    }
 
-  String width = tool.getWindowWidth();
-  String height = tool.getWindowHeight();
-  boolean dimensions = (width.length() > 0) || (height.length() > 0);
-  if (width.length() <= 0) {
-    width = "100%";
-  }
-  if (height.length() <= 0) {
-    height = "' + osc_getHeight(el) + '";
-  }
+    String width = tool.getWindowWidth();
+    String height = tool.getWindowHeight();
+    boolean dimensions = (width.length() > 0) || (height.length() > 0);
+    if (width.length() <= 0) {
+        width = "100%";
+    }
+    if (height.length() <= 0) {
+        height = "' + osc_getHeight(el) + '";
+    }
 
-  pageContext.setAttribute("bundle", b2Context.getResourceStrings());
-  pageContext.setAttribute("tool", tool);
-  pageContext.setAttribute("toolName", toolName);
-  pageContext.setAttribute("width", width);
-  pageContext.setAttribute("height", height);
-  pageContext.setAttribute("query", request.getQueryString() + "&if=true");
+    pageContext.setAttribute("bundle", b2Context.getResourceStrings());
+    pageContext.setAttribute("tool", tool);
+    pageContext.setAttribute("toolName", toolName);
+    pageContext.setAttribute("width", width);
+    pageContext.setAttribute("height", height);
+    pageContext.setAttribute("query", request.getQueryString() + "&if=true");
 %>
 <bbNG:genericPage title="${bundle['page.course.tool.title']}" onLoad="osc_doOnLoad()" entitlement="system.generic.VIEW">
   <bbNG:pageHeader>
@@ -80,9 +81,9 @@
   </bbNG:cssBlock>
   <bbNG:jsBlock>
     <script language="javascript" type="text/javascript">
-    //<![CDATA[
+      //<![CDATA[
       <%
-      if (!dimensions) {
+          if (!dimensions) {
       %>
       var osc_resizeTimeoutId;
 
@@ -101,8 +102,8 @@
         osc_resizeTimeoutId = window.setTimeout(osc_doResize, 10);
       }
       <%
-      }
-      if (tool.getWindowHeight().length() <= 0) {
+          }
+          if (tool.getWindowHeight().length() <= 0) {
       %>
 
       function osc_getHeight(el) {
@@ -114,14 +115,14 @@
         return parseInt(height) + "px";
       }
       <%
-      }
+          }
       %>
 
       function osc_doOnLoad() {
         var el = document.getElementById("osc_frame");
         el.innerHTML = '<iframe id="osc_if" src="window.jsp?${query}" width="${width}" height="${height}" frameborder="0" />';
       <%
-      if (!dimensions) {
+          if (!dimensions) {
       %>
         if (document.body.onresize) {
           document.body.onresize = osc_doOnResize;
@@ -129,10 +130,10 @@
           window.onresize = osc_doOnResize;
         }
       <%
-      }
+          }
       %>
       }
-    //]]>
+      //]]>
     </script>
   </bbNG:jsBlock>
   <div id="osc_frame"></div>

@@ -56,6 +56,7 @@
     Utils.checkForm(request, formName);
 
     B2Context b2Context = new B2Context(request);
+    Utils.checkInheritSettings(b2Context);
     Utils.checkCourse(b2Context);
     String courseIdParamName = "course_id";
     String contentIdParamName = "content_id";

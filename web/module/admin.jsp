@@ -35,6 +35,7 @@
   Utils.checkForm(request, formName);
 
   B2Context b2Context = new B2Context(request);
+  Utils.checkInheritSettings(b2Context);
 
   ToolList toolList = new ToolList(b2Context);
   String toolId = b2Context.getRequestParameter(Constants.TOOL_ID,

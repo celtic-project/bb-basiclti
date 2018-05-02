@@ -34,6 +34,7 @@
       Utils.checkForm(request, formName);
 
       B2Context b2Context = new B2Context(request);
+      Utils.checkInheritSettings(b2Context);
       Utils.checkCourse(b2Context);
       ToolList toolList = new ToolList(b2Context);
       boolean allowLocal = b2Context.getSetting(Constants.TOOL_DELEGATE, Constants.DATA_FALSE).equals(Constants.DATA_TRUE);

@@ -28,6 +28,7 @@
 <%@taglib uri="/bbNG" prefix="bbNG"%>
 <%
     B2Context b2Context = new B2Context(request);
+    Utils.checkInheritSettings(b2Context);
     String toolId = b2Context.getRequestParameter(Constants.TOOL_ID, b2Context.getSetting(false, true, "tool.id", ""));
     Tool tool = Utils.getTool(b2Context, toolId);
 

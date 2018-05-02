@@ -1827,6 +1827,16 @@ public class Utils {
 
     }
 
+    public static void checkInheritSettings(B2Context b2Context) {
+
+        if (b2Context.getSetting(Constants.NODE_CONFIGURE, Constants.DATA_FALSE).equals(Constants.DATA_TRUE)) {
+            b2Context.setInheritSettings(b2Context.getSetting(Constants.INHERIT_SETTINGS, Constants.DATA_FALSE).equals(Constants.DATA_TRUE));
+        } else {
+            b2Context.clearNode();
+        }
+
+    }
+
     /**
      * Initialises the current node.
      *

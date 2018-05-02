@@ -34,6 +34,7 @@
 <%
     Utils.checkForModule(request);
     B2Context b2Context = new B2Context(request);
+    Utils.checkInheritSettings(b2Context);
     String contentId = b2Context.getRequestParameter("content_id", "");
     String toolId = b2Context.getRequestParameter(Constants.TOOL_ID, b2Context.getSetting(false, true, "tool.id", ""));
     Tool tool = Utils.getTool(b2Context, toolId);

@@ -40,6 +40,7 @@
       Utils.checkForm(request, formName);
 
       B2Context b2Context = new B2Context(request);
+      Utils.checkInheritSettings(b2Context);
       String query = Utils.getQuery(request);
       String cancelUrl = "tools.jsp?" + query;
       String toolId = b2Context.getRequestParameter(Constants.TOOL_ID, "");
