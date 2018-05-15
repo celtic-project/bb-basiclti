@@ -192,6 +192,8 @@
            b2Context.getRequestParameter(Constants.TOOL_GUID, b2Context.getSetting(toolSettingPrefix + Constants.TOOL_GUID, "")));
         b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_SECRET,
            b2Context.getRequestParameter(Constants.TOOL_SECRET, b2Context.getSetting(toolSettingPrefix + Constants.TOOL_SECRET, "")));
+        b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_ICON, b2Context.getRequestParameter(Constants.TOOL_ICON, ""));
+        b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_ICON_DISABLED, b2Context.getRequestParameter(Constants.TOOL_ICON_DISABLED, ""));
       }
       b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_USERID,
          b2Context.getRequestParameter(Constants.TOOL_USERID, b2Context.getSetting(toolSettingPrefix + Constants.TOOL_USERID, Constants.DATA_NOTUSED)));
@@ -233,8 +235,6 @@
       }
       b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_CSS,
          b2Context.getRequestParameter(Constants.TOOL_CSS, ""));
-      b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_ICON, b2Context.getRequestParameter(Constants.TOOL_ICON, ""));
-      b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_ICON_DISABLED, b2Context.getRequestParameter(Constants.TOOL_ICON_DISABLED, ""));
       if (b2Context.getSetting(false, true, toolSettingPrefix + Constants.TOOL_EXT_UUID, "").length() <= 0) {
         b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_EXT_UUID, UUID.randomUUID().toString());
       }

@@ -53,6 +53,20 @@
             }
         }
     } else {
+        boolean persist = false;  // Check for icon bug in 3.3.0
+        icon = b2Context.getSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + toolId + "." + Constants.TOOL_ICON, null);
+        if ((icon != null) && (icon.length() <= 0)) {
+            b2Context.setSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + toolId + "." + Constants.TOOL_ICON, null);
+            persist = true;
+        }
+        icon = b2Context.getSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + toolId + "." + Constants.TOOL_ICON_DISABLED, null);
+        if ((icon != null) && (icon.length() <= 0)) {
+            b2Context.setSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + toolId + "." + Constants.TOOL_ICON_DISABLED, null);
+            persist = true;
+        }
+        if (persist) {
+            b2Context.persistSettings(false, true);
+        }
         Tool tool = new Tool(b2Context, toolId);
         icon = tool.getDisplayIcon();
         if (icon.length() <= 0) {
