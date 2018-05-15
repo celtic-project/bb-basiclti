@@ -5,10 +5,10 @@
     <description value="plugin.description" />
     <handle value="BasicLTI" />
     <default-locale value="en_US" />
-    <version value="3.3.0" />
+    <version value="3.3.1" />
     <webapp-type value="javaext" />
     <requires>
-      <bbversion value="9.1.10" />
+      <bbversion value="9.1.100401.0" />
       <plugin-versions>
         <plugin-version min="10.1" handle="assessment" vendor="bb" />
       </plugin-versions>
