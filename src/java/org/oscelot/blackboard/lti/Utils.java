@@ -289,7 +289,7 @@ public class Utils {
     }
 
 // ---------------------------------------------------
-// Function to get a course role with an option for replacing any admin-defined roles with
+// Function to get a user ID value
     public static String getLTIUserId(String userIdType, User user) {
 
         String userId;
