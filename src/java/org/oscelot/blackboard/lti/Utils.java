@@ -229,7 +229,11 @@ public class Utils {
         }
         if (value != null) {
             String algorithm;
-            if (signaturemethod.equals("HMAC-SHA256")) {
+            if (signaturemethod.equals("HMAC-SHA512")) {
+                algorithm = "SHA-512";
+            } else if (signaturemethod.equals("HMAC-SHA384")) {
+                algorithm = "SHA-384";
+            } else if (signaturemethod.equals("HMAC-SHA256")) {
                 algorithm = "SHA-256";
             } else {
                 algorithm = "SHA-1";
