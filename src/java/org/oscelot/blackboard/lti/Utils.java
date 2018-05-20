@@ -1713,6 +1713,8 @@ public class Utils {
                     course = courseLoader.loadById(courseId);
                     if (contextIdType.equals(Constants.DATA_PRIMARYKEY)) {
                         contextId = course.getId().toExternalString();
+                    } else if (contextIdType.equals(Constants.DATA_COURSEID)) {
+                        contextId = course.getCourseId();
                     } else if (contextIdType.equals(Constants.DATA_UUID) && B2Context.getIsVersion(9, 1, 13)) {
                         contextId = course.getUuid();
                     } else {
