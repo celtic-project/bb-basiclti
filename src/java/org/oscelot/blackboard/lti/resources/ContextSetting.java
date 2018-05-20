@@ -87,7 +87,7 @@ public class ContextSetting extends Resource {
         String bubble = b2Context.getRequestParameter("bubble", null);
         boolean ok = (contextType.length() > 0) && (contextId.length() > 0)
                 && (vendorCode.length() > 0) && (productCode.length() > 0)
-                && this.getService().checkTool(productCode);
+                && this.getService().checkTool(productCode, response.getData());
         if (!ok) {
             response.setCode(401);
         }

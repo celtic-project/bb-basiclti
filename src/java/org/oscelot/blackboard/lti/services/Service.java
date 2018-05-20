@@ -226,7 +226,7 @@ public abstract class Service {
 
     }
 
-    public boolean checkTool(String toolId) {
+    public boolean checkTool(String toolId, String body) {
 
         boolean ok = false;
 
@@ -259,6 +259,12 @@ public abstract class Service {
             if (!ok && this.getIsUnsigned().equals(Constants.DATA_TRUE) && (aTool != null)) {
                 ok = true;
             }
+        }
+        if (ok && (body != null) && (body.length() > 0)) {
+            ok = Utils.checkBodyHash(authHeaders, body);
+        }
+        if (ok) {
+            ok = aTool.getHasService(this.getId()).equals(Constants.DATA_TRUE);
         }
         if (ok) {
             this.tool = aTool;

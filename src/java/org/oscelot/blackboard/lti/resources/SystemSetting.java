@@ -79,7 +79,7 @@ public class SystemSetting extends Resource {
         Map<String, String> template = this.parseTemplate();
         String tpId = template.get("tool_proxy_guid");
         String bubble = b2Context.getRequestParameter("bubble", null);
-        boolean ok = (tpId.length() > 0) && this.getService().checkTool(tpId);
+        boolean ok = (tpId.length() > 0) && this.getService().checkTool(tpId, response.getData());
         if (!ok) {
             response.setCode(401);
         }

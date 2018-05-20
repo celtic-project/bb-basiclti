@@ -70,7 +70,6 @@ public class Controller extends HttpServlet implements SingleThreadModel {
         OAuthMessage message = OAuthServlet.getMessage(request, null);
         Map<String, String> authHeaders = Utils.getAuthorizationHeaders(message);
         String consumerKey = authHeaders.get("oauth_consumer_key");
-        String signatureMethod = authHeaders.get("oauth_signature_method");
 
         String xml = message.readBodyAsString();
         String actionName = "";
@@ -119,7 +118,7 @@ public class Controller extends HttpServlet implements SingleThreadModel {
             }
         }
         if (ok) {
-            ok = Utils.checkBodyHash(message.getAuthorizationHeader(null), signatureMethod, xml);
+            ok = Utils.checkBodyHash(authHeaders, xml);
             if (!ok) {
                 description = "svc.codeminor.bodyhash";
             }

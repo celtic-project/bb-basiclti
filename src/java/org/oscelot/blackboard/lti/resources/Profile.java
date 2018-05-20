@@ -90,7 +90,7 @@ public class Profile extends Resource {
     public void execute(B2Context b2Context, Response response) {
 
         Map<String, String> template = this.parseTemplate();
-        boolean ok = this.getService().checkTool(template.get("tool_id"));
+        boolean ok = this.getService().checkTool(template.get("tool_id"), null);
         if (!ok) {
             response.setCode(404);
         } else if (!b2Context.getRequestParameter("lti_version", "").equals(Constants.LTI_VERSION)

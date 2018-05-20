@@ -213,21 +213,13 @@ public class Utils {
 
 // ---------------------------------------------------
 // Function to check hash value of the request body
-    public static boolean checkBodyHash(String header, String signaturemethod, String xml) {
+    public static boolean checkBodyHash(Map<String, String> headers, String body) {
 
-        boolean ok = false;
+        boolean ok;
 
-        List<Parameter> authParams;
-        String value = null;
-        authParams = OAuthMessage.decodeAuthorization(header);
-        for (Iterator<Parameter> iter = authParams.iterator(); iter.hasNext();) {
-            Parameter param = iter.next();
-            if (param.getKey().equals("oauth_body_hash")) {
-                value = param.getValue();
-                break;
-            }
-        }
-        if (value != null) {
+        String hash = headers.get("oauth_body_hash");
+        String signaturemethod = headers.get("oauth_signature_method");
+        if ((body != null) && (hash != null) && (signaturemethod != null)) {
             String algorithm;
             if (signaturemethod.equals("HMAC-SHA512")) {
                 algorithm = "SHA-512";
@@ -238,7 +230,9 @@ public class Utils {
             } else {
                 algorithm = "SHA-1";
             }
-            ok = value.equals(getHash("", xml, algorithm, false));
+            ok = hash.equals(getHash("", body, algorithm, false));
+        } else {
+            ok = (body == null) || (body.length() <= 0);
         }
 
         return ok;

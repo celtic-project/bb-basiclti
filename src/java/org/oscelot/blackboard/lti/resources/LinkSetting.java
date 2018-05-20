@@ -112,7 +112,7 @@ public class LinkSetting extends Resource {
                 } else {
                     id = "";
                 }
-                ok = this.getService().checkTool(toolId);
+                ok = this.getService().checkTool(toolId, response.getData());
             }
             if (!ok) {
                 response.setCode(401);
