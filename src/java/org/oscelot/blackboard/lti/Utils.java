@@ -310,6 +310,37 @@ public class Utils {
     }
 
 // ---------------------------------------------------
+// Function to get a context ID value
+    public static String getLTIContextId(B2Context b2Context, Course course, Tool tool) {
+
+        String contextId = null;
+        if (course != null) {
+            String contextIdType = tool.getContextIdType();
+            if (contextIdType.equals(Constants.DATA_PRIMARYKEY)) {
+                contextId = course.getId().toExternalString();
+            } else if (contextIdType.equals(Constants.DATA_COURSEID)) {
+                contextId = course.getCourseId();
+            } else if (contextIdType.equals(Constants.DATA_UUID) && B2Context.getIsVersion(9, 1, 13)) {
+                contextId = course.getUuid();
+            } else {
+                contextId = course.getBatchUid();
+            }
+        } else {
+            try {
+                contextId = CourseDbLoader.Default.getInstance().loadSystemCourse().getId().toExternalString();
+            } catch (PersistenceException e) {
+                B2Context.log(true, null, (Object) e);
+            }
+        }
+        if (b2Context.getContext().hasGroupContext() && (contextId != null)) {
+            contextId += Constants.PREFIX_GROUP + b2Context.getContext().getGroupId().toExternalString();
+        }
+
+        return contextId;
+
+    }
+
+// ---------------------------------------------------
 // Function to get a course role with an option for replacing any admin-defined roles with
 // a standard system role (either Instructor or Teaching Assistant).
     public static Role getRole(Role role, boolean systemRolesOnly) {

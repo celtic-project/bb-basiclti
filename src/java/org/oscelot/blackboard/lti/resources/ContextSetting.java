@@ -31,6 +31,7 @@ import java.util.Properties;
 import com.google.gson.Gson;
 
 import blackboard.persist.Id;
+import blackboard.data.course.Course;
 
 import org.oscelot.blackboard.lti.services.Service;
 import org.oscelot.blackboard.lti.resources.settings.ToolSettingsContainerV1;
@@ -38,6 +39,7 @@ import org.oscelot.blackboard.lti.resources.settings.ToolSettingsContainerV1;
 import com.spvsoftwareproducts.blackboard.utils.B2Context;
 import org.oscelot.blackboard.lti.Constants;
 import org.oscelot.blackboard.lti.services.Setting;
+import org.oscelot.blackboard.lti.Utils;
 
 public class ContextSetting extends Resource {
 
@@ -102,9 +104,7 @@ public class ContextSetting extends Resource {
             }
         }
 
-        if (!ok) {
-            response.setCode(404);
-        } else {
+        if (ok) {
             SystemSetting systemSetting = null;
             Properties contextSettings;
             Properties systemSettings = null;
@@ -213,11 +213,12 @@ public class ContextSetting extends Resource {
     @Override
     public String parseValue(String value) {
 
-        Id courseId = this.getService().getB2Context().getCourseId();
-        if (courseId != null) {
+        B2Context b2Context = this.getService().getB2Context();
+        Course course = b2Context.getContext().getCourse();
+        if (course != null) {
             String url = this.getEndpoint();
             url = url.replaceAll("\\{context_type\\}", "CourseSection");
-            url = url.replaceAll("\\{context_id\\}", courseId.toExternalString());
+            url = url.replaceAll("\\{context_id\\}", Utils.getLTIContextId(b2Context, course, this.getService().getTool()));
             url = url.replaceAll("\\{vendor_code\\}", this.getService().getB2Context().getVendorId());
             url = url.replaceAll("\\{product_code\\}", this.getService().getTool().getId());
             value = value.replaceAll("\\$ToolProxyBinding.custom.url", url);
