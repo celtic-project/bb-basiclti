@@ -39,7 +39,7 @@ import org.oscelot.blackboard.lti.services.Setting;
 public class SystemSetting extends Resource {
 
     private static final String ID = "ToolProxySettings";
-    private static final String TEMPLATE = "/ToolProxy/{tool_proxy_guid}";
+    private static final String TEMPLATE = "/ToolProxy/{tool_proxy_guid}(/custom)";
     private static List<String> FORMATS = new ArrayList<String>() {
         {
             add("application/vnd.ims.lti.v2.toolsettings+json");

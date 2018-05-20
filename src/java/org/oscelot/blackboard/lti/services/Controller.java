@@ -66,6 +66,7 @@ public class Controller extends HttpServlet {
         Resource resource = null;
         String path = request.getPathInfo();
         String template;
+        String template1;
         for (Iterator<Service> iter = services.iterator(); iter.hasNext();) {
             service = iter.next();
             resources = service.getResources();
@@ -79,7 +80,14 @@ public class Controller extends HttpServlet {
                 template = resource.getTemplate();
                 template = template.replaceAll("\\{[a-zA-Z_]+\\}", "[0-9a-zA-Z_:\\-]+");
                 template = template.replaceAll("\\{\\?[0-9a-zA-Z_\\-,]+\\}$", "");
-                if (path.matches(template)) {
+                if (template.contains("(")) {
+                    template1 = template.replaceAll("[\\(\\)]", "");
+                    template = template.replaceAll("\\([0-9a-zA-Z_/]+\\)", "");
+                    ok = path.matches(template1) || path.matches(template);
+                    if (ok) {
+                        break;
+                    }
+                } else if (path.matches(template)) {
                     ok = true;
                     break;
                 }

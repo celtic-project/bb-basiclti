@@ -43,7 +43,7 @@ import com.spvsoftwareproducts.blackboard.utils.B2Context;
 public class LinkSetting extends Resource {
 
     private static final String ID = "LtiLinkSettings";
-    private static final String TEMPLATE = "/links/{link_id}";
+    private static final String TEMPLATE = "/links/{link_id}(/custom)";
     private static List<String> FORMATS = new ArrayList<String>() {
         {
             add("application/vnd.ims.lti.v2.toolsettings+json");

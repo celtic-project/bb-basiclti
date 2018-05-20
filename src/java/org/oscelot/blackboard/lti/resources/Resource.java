@@ -106,7 +106,9 @@ public abstract class Resource {
 
         this.parseTemplate();
         B2Context b2Context = this.getService().getB2Context();
-        String url = b2Context.getServerUrl() + b2Context.getPath() + Constants.RESOURCE_PATH + this.getTemplate();
+        String template = this.getTemplate();
+        template = template.replaceAll("[\\(\\)]", "");
+        String url = b2Context.getServerUrl() + b2Context.getPath() + Constants.RESOURCE_PATH + template;
         Map.Entry<String, String> entry;
         for (Iterator<Map.Entry<String, String>> iter = this.params.entrySet().iterator(); iter.hasNext();) {
             entry = iter.next();
@@ -136,7 +138,9 @@ public abstract class Resource {
             String pathInfo = this.getService().getB2Context().getRequest().getPathInfo();
             if (pathInfo != null) {
                 String[] path = pathInfo.split("/");
-                String[] parts = this.getTemplate().split("/");
+                String template = this.getTemplate();
+                template = template.replaceAll("[\\(\\)]", "");
+                String[] parts = template.split("/");
                 String value;
                 for (int i = 0; i < parts.length; i++) {
                     if (parts[i].startsWith("{") && parts[i].endsWith("}")) {
