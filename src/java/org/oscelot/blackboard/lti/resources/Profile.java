@@ -157,30 +157,51 @@ public class Profile extends Resource {
             profile.append("  },\n");
             profile.append("  \"capability_offered\":[\n");
             profile.append("    \"basic-lti-launch-request\"");
+            if (tool.getContentItem().equals(Constants.DATA_TRUE)) {
+                profile.append(", \"ContentItemSelectionRequest\"");
+            }
+            if (tool.getConfig().equals(Constants.DATA_TRUE)) {
+                profile.append(", \"ConfigureLaunchRequest\"");
+            }
+            if (tool.getDashboard().equals(Constants.DATA_TRUE)) {
+                profile.append(", \"DashboardRequest\"");
+            }
+            profile.append(",\n    \"ResourceLink.id\", \"ResourceLink.id.history\", \"ResourceLink.title\", \"ResourceLink.description\"");
+            profile.append(",\n    \"ResourceLink.timeFrame.begin\", \"ResourceLink.timeFrame.end\"");
+            profile.append(",\n    \"CourseSection.id\", \"CourseSection.title\", \"CourseSection.shortDescription\", \"CourseSection.longDescription\", \"CourseSection.dept\"");
+            profile.append(",\n    \"Context.id\", \"Context.title\" ,\"Context.shortDescription\", \"Context.longDescription\", \"Context.dept\"");
             if (tool.getDoSendContextSourcedid()) {
-                profile.append(",\n    \"CourseSection.sourcedId\",\"CourseSection.dataSource\",\"CourseSection.sourceSectionId\"");
+                profile.append(",\n    \"CourseSection.sourcedId\", \"CourseSection.dataSource\", \"CourseSection.sourceSectionId\"");
+                profile.append(",\n    \"Context.sourcedId\", \"Context.dataSource\", \"Context.sourceSectionId\"");
             }
-            profile.append(",\n    \"CourseSection.title\",\"CourseSection.shortDescription\",\"CourseSection.longDescription\"");
-            profile.append(",\n    \"CourseSection.timeframe.begin\",\"CourseSection.timeframe.end\"");
+            profile.append(",\n    \"CourseSection.timeFrame.begin\", \"CourseSection.timeFrame.end\"");
+            profile.append(",\n    \"Context.timeFrame.begin\", \"Context.timeFrame.end\"");
+            if (tool.getDoSendExtCopyOf()) {
+                profile.append(",\n    \"Context.id.history\"");
+            }
             if (tool.getDoSendUserId()) {
-                profile.append(",\n    \"User.id\",\"User.username\",\"Person.studentId\"");
+                profile.append(",\n    \"User.id\", \"User.username\", \"User.org\"");
             }
+            if (tool.getDoSendAvatar()) {
+                profile.append(", \"User.image\"");
+            }
+            profile.append(", \"Person.studentId\"");
             if (tool.getDoSendUserSourcedid()) {
-                profile.append(",\n    \"Person.sourcedId\"");
+                profile.append(", \"Person.sourcedId\"");
             }
             if (tool.getDoSendUsername()) {
-                profile.append(",\n    \"Person.name.prefix\",\"Person.name.given\",\"Person.name.middle\",\"Person.name.family\",\"Person.name.full\"");
-                profile.append(",\n    \"Person.address.street1\",\"Person.address.street2\",\"Person.address.locality\",\"Person.address.statepr\",\"Person.address.country\",\"Person.address.postcode\",\"Person.address.timezone\"");
-                profile.append(",\n    \"Person.phone.mobile\",\"Person.phone.primary\",\"Person.phone.home\",\"Person.phone.work\",\"Person.phone.webaddress\"");
+                profile.append(",\n    \"Person.name.prefix\", \"Person.name.given\", \"Person.name.middle\", \"Person.name.family\", \"Person.name.full\"");
+                profile.append(",\n    \"Person.address.street1\", \"Person.address.street2\", \"Person.address.locality\", \"Person.address.statepr\", \"Person.address.country\", \"Person.address.postcode\", \"Person.address.timezone\"");
+                profile.append(",\n    \"Person.phone.mobile\", \"Person.phone.primary\", \"Person.phone.home\", \"Person.phone.work\", \"Person.webaddress\"");
             }
             if (tool.getDoSendEmail()) {
-                profile.append(",\n    \"Person.email.primary\",\"Person.email.personal\"");
+                profile.append(",\n    \"Person.email.primary\", \"Person.email.personal\"");
             }
             if (tool.getDoSendRoles()) {
                 profile.append(",\n    \"Membership.role\"");
             }
             if (tool.getDoSendOutcomesService()) {
-                profile.append(",\n    \"Result.autocreate\",\"Result.sourcedId\"");
+                profile.append(",\n    \"Result.autocreate\", \"Result.sourcedId\", \"Result.pointsPossible\"");
             }
             StringBuilder service = new StringBuilder();
             service.append("  \"service_offered\":[");

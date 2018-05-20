@@ -582,8 +582,13 @@ public class Utils {
 
         if (value.contains("$User.")) {
             if (tool.getDoSendUserId()) {
-                value = value.replaceAll("\\$User.id", user.getId().toExternalString());
+                value = value.replaceAll("\\$User.id", props.getProperty("user_id"));
                 value = value.replaceAll("\\$User.username", user.getUserName());
+                if (value.contains("$User.org")) {
+                    value = value.replaceAll("\\$User.org", getOrg(user.getId(), false));
+                }
+            }
+            if (tool.getDoSendAvatar()) {
                 try {
                     if (value.contains("$User.image") && MyPlacesUtil.avatarsEnabled() && displayAvatar(user.getId()) && tool.getDoSendAvatar()) {
                         String image = MyPlacesUtil.getAvatarImage(user.getId());
@@ -595,9 +600,6 @@ public class Utils {
                         value = value.replaceAll("\\$User.image", image);
                     }
                 } catch (Exception e) {
-                }
-                if (value.contains("$User.org")) {
-                    value = value.replaceAll("\\$User.org", getOrg(user.getId(), false));
                 }
             }
         }
@@ -634,6 +636,11 @@ public class Utils {
                 value = value.replaceAll("\\$Person.email.personal", user.getEmailAddress());
             }
         }
+        if (value.contains("$Membership.")) {
+            if (tool.getDoSendRoles()) {
+                value = value.replaceAll("\\$Membership.role", props.getProperty("roles"));
+            }
+        }
         String oldContextId = null;
         if ((course != null) && value.contains("$Context.")) {
             if (tool.getDoSendContextId()) {
@@ -654,7 +661,7 @@ public class Utils {
                     value = value.replaceAll("\\$Context.dataSource", course.getDataSourceId().toExternalString());
                     value = value.replaceAll("\\$Context.sourceSectionId", course.getCourseId());
                 }
-                value = value.replaceAll("\\$Context.label", "");
+//                value = value.replaceAll("\\$Context.label", "");
                 value = value.replaceAll("\\$Context.title", course.getTitle());
                 value = value.replaceAll("\\$Context.shortDescription", course.getDescription());
                 value = value.replaceAll("\\$Context.longDescription", course.getDescription());
@@ -706,13 +713,18 @@ public class Utils {
                 value = value.replaceAll("\\$ResourceLink.timeFrame.end", formatCalendar(content.getEndDate(), Constants.ISO_DATE_FORMAT));
             }
         }
-        if ((course != null) && value.contains("$CourseSection.")) {
+        if ((course != null) && value.contains("$CourseSection.") && props.getProperty("context_type").equals("CourseSection")) {
+            if (tool.getDoSendContextId()) {
+                if (props.containsKey("context_id")) {
+                    value = value.replaceAll("\\$CourseSection.id", props.getProperty("context_id"));
+                }
+            }
             if (tool.getDoSendContextSourcedid()) {
                 value = value.replaceAll("\\$CourseSection.sourcedId", course.getBatchUid());
                 value = value.replaceAll("\\$CourseSection.dataSource", course.getDataSourceId().toExternalString());
                 value = value.replaceAll("\\$CourseSection.sourceSectionId", course.getCourseId());
             }
-            value = value.replaceAll("\\$CourseSection.label", "");
+//            value = value.replaceAll("\\$CourseSection.label", "");
             value = value.replaceAll("\\$CourseSection.title", course.getTitle());
             value = value.replaceAll("\\$CourseSection.shortDescription", course.getDescription());
             value = value.replaceAll("\\$CourseSection.longDescription", course.getDescription());
