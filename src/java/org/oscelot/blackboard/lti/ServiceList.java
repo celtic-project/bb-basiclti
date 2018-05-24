@@ -53,22 +53,8 @@ public class ServiceList {
 
     public List<Service> getList() {
 
-        return getList(true);
-
-    }
-
-    public List<Service> getList(boolean includeProfile) {
-
-        return getList(includeProfile, true);
-
-    }
-
-    private List<Service> getList(boolean includeProfile, boolean fillEmpty) {
-
-        if ((this.services == null) || !fillEmpty) {
             if (this.services == null) {
                 this.services = new TreeMap<String, Service>();
-            }
             Map<String, String> settings = b2Context.getSettings();
             String key;
             String[] parts;
@@ -77,34 +63,13 @@ public class ServiceList {
                 key = iter.next();
                 if (key.startsWith(Constants.SERVICE_PARAMETER_PREFIX + ".")) {
                     parts = key.split("\\.");
-                    if ((parts.length == 2) && (includeProfile || (!parts[1].equals(Constants.RESOURCE_PROFILE)))) {
+                    if (parts.length == 2) {
                         service = Service.getServiceFromClassName(this.b2Context, Service.getSettingValue(b2Context, parts[1], Constants.SERVICE_CLASS, ""));
                         if ((service != null) && (this.listAll || service.getIsEnabled().equals(Constants.DATA_TRUE))) {
                             this.services.put(parts[1], service);
                         }
                     }
                 }
-            }
-            if (this.services.isEmpty() && fillEmpty) {
-                boolean doSave = false;
-                String prefix;
-                Map.Entry<String, String> entry;
-                for (Iterator<Map.Entry<String, String>> iter = STANDARD_SERVICES.entrySet().iterator(); iter.hasNext();) {
-                    entry = iter.next();
-                    service = Service.getServiceFromClassName(this.b2Context, entry.getKey());
-                    if (service != null) {
-                        doSave = true;
-                        prefix = Constants.SERVICE_PARAMETER_PREFIX + "." + service.getId();
-                        b2Context.setSetting(prefix, Constants.DATA_FALSE);
-                        b2Context.setSetting(prefix + "." + Constants.TOOL_NAME, service.getName());
-                        b2Context.setSetting(prefix + "." + Constants.SERVICE_CLASS, entry.getKey());
-                        b2Context.setSetting(prefix + "." + Constants.SERVICE_UNSIGNED, null);
-                    }
-                }
-                if (doSave) {
-                    b2Context.persistSettings();
-                }
-                getList(includeProfile, false);
             }
         }
 

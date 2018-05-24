@@ -1963,6 +1963,22 @@ public class Utils {
                 b2Context.setSetting(Constants.TOOL_INSTITUTION_ROLES, value);
                 b2Context.setSetting(Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_INSTITUTION_ROLES, null);
             }
+            String key;
+            Service service;
+            String prefix;
+            for (Iterator<String> iter = ServiceList.STANDARD_SERVICES.iterator(); iter.hasNext();) {
+                key = iter.next();
+                service = Service.getServiceFromClassName(b2Context, key);
+                if (service != null) {
+                    prefix = Constants.SERVICE_PARAMETER_PREFIX + "." + service.getId();
+                    if (b2Context.getSetting(prefix, "").length() <= 0) {
+                        b2Context.setSetting(prefix, Constants.DATA_FALSE);
+                        b2Context.setSetting(prefix + "." + Constants.TOOL_NAME, service.getName());
+                        b2Context.setSetting(prefix + "." + Constants.SERVICE_CLASS, key);
+                        b2Context.setSetting(prefix + "." + Constants.SERVICE_UNSIGNED, null);
+                    }
+                }
+            }
             ToolList tools = new ToolList(b2Context);
             Tool tool;
             String toolId;
