@@ -56,7 +56,7 @@ public abstract class Resource {
 
     public String getPath() {
 
-        return this.getTemplate();
+        return this.getTemplate().replaceAll("[\\(\\)]", "");
 
     }
 
