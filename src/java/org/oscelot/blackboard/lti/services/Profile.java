@@ -35,6 +35,7 @@ public class Profile extends Service {
     public Profile(B2Context b2Context) {
 
         super(b2Context);
+        this.isSigned = false;
 
     }
 

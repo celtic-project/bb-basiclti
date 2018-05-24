@@ -52,6 +52,7 @@ public abstract class Service {
     private B2Context b2Context = null;
     private Tool tool = null;
     protected List<Resource> resources = null;
+    protected boolean isSigned = true;
     private OAuthMessage message = null;
 
     public Service(B2Context b2Context) {
@@ -73,12 +74,6 @@ public abstract class Service {
     public String getIsEnabled() {
 
         return getSettingValue(null, Constants.DATA_FALSE);
-
-    }
-
-    public String getIsUnsigned() {
-
-        return getSettingValue(Constants.SERVICE_UNSIGNED, Constants.DATA_FALSE);
 
     }
 
@@ -237,10 +232,10 @@ public abstract class Service {
         if (toolId != null) {
             aTool = new Tool(this.b2Context, toolId);
             if (aTool.getIsSystemTool()) {
-                if (!this.getIsUnsigned().equals(Constants.DATA_TRUE) && aTool.getLaunchGUID().equals(consumerKey)) {
+                if (this.isSigned && aTool.getLaunchGUID().equals(consumerKey)) {
                     ok = checkSignature(aTool.getLaunchGUID(), aTool.getLaunchSecret());
                 } else {
-                    ok = this.getIsUnsigned().equals(Constants.DATA_TRUE);
+                    ok = !this.isSigned;
                 }
             }
         } else {
@@ -256,7 +251,7 @@ public abstract class Service {
                     }
                 }
             }
-            if (!ok && this.getIsUnsigned().equals(Constants.DATA_TRUE) && (aTool != null)) {
+            if (!ok && !this.isSigned && (aTool != null)) {
                 ok = true;
             }
         }
@@ -308,7 +303,7 @@ public abstract class Service {
         result.append("  Name: ").append(this.getName()).append(newLine);
         result.append("  Class: ").append(this.getClassName()).append(newLine);
         result.append("  Enabled: ").append(this.getIsEnabled()).append(newLine);
-        result.append("  Unsigned: ").append(this.getIsUnsigned()).append(newLine);
+        result.append("  Signed: ").append(this.isSigned).append(newLine);
         result.append("}");
 
         return result.toString();

@@ -21,7 +21,6 @@
 package org.oscelot.blackboard.lti;
 
 import java.util.Map;
-import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.List;
 import java.util.ArrayList;
@@ -33,11 +32,11 @@ import com.spvsoftwareproducts.blackboard.utils.B2Context;
 
 public class ServiceList {
 
-    private static final Map<String, String> STANDARD_SERVICES = new HashMap<String, String>() {
+    public static final List<String> STANDARD_SERVICES = new ArrayList<String>() {
         {
-            put("org.oscelot.blackboard.lti.services.Profile", Constants.DATA_TRUE);
-            put("org.oscelot.blackboard.lti.services.Setting", Constants.DATA_FALSE);
-            put("org.oscelot.blackboard.lti.services.OutcomesV1", Constants.DATA_TRUE);
+            add("org.oscelot.blackboard.lti.services.Profile");
+            add("org.oscelot.blackboard.lti.services.Setting");
+            add("org.oscelot.blackboard.lti.services.OutcomesV1");
         }
 
     };
@@ -99,7 +98,7 @@ public class ServiceList {
                         b2Context.setSetting(prefix, Constants.DATA_FALSE);
                         b2Context.setSetting(prefix + "." + Constants.TOOL_NAME, service.getName());
                         b2Context.setSetting(prefix + "." + Constants.SERVICE_CLASS, entry.getKey());
-                        b2Context.setSetting(prefix + "." + Constants.SERVICE_UNSIGNED, entry.getValue());
+                        b2Context.setSetting(prefix + "." + Constants.SERVICE_UNSIGNED, null);
                     }
                 }
                 if (doSave) {
@@ -126,7 +125,7 @@ public class ServiceList {
 
     public static boolean isStandardService(String serviceId) {
 
-        return STANDARD_SERVICES.containsKey(serviceId);
+        return STANDARD_SERVICES.contains(serviceId);
 
     }
 

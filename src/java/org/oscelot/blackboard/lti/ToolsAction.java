@@ -98,16 +98,6 @@ public class ToolsAction extends HttpServlet {
                             Utils.doCourseToolsDelete(b2Context, toolId);
                         }
                     }
-                } else if (action.equals(Constants.ACTION_SIGNED)) {
-                    if (b2Context.getSetting(toolSettingPrefix + "." + Constants.SERVICE_UNSIGNED, Constants.DATA_FALSE).equals(Constants.DATA_TRUE)) {
-                        b2Context.setSetting(toolSettingPrefix + "." + Constants.SERVICE_UNSIGNED, Constants.DATA_FALSE);
-                        saveGlobal = true;
-                    }
-                } else if (action.equals(Constants.ACTION_UNSIGNED)) {
-                    if (!b2Context.getSetting(toolSettingPrefix + "." + Constants.SERVICE_UNSIGNED, Constants.DATA_FALSE).equals(Constants.DATA_TRUE)) {
-                        b2Context.setSetting(toolSettingPrefix + "." + Constants.SERVICE_UNSIGNED, Constants.DATA_TRUE);
-                        saveGlobal = true;
-                    }
                 } else if (action.equals(Constants.ACTION_DELETE)) {
                     if (!isService) {
                         Tool tool = new Tool(b2Context, toolId);

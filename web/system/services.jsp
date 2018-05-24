@@ -53,8 +53,6 @@
       pageContext.setAttribute("cancelUrl", cancelUrl);
       pageContext.setAttribute("DoEnable", Constants.ACTION_ENABLE);
       pageContext.setAttribute("DoDisable", Constants.ACTION_DISABLE);
-      pageContext.setAttribute("DoSigned", Constants.ACTION_SIGNED);
-      pageContext.setAttribute("DoUnsigned", Constants.ACTION_UNSIGNED);
       pageContext.setAttribute("DoDelete", Constants.ACTION_DELETE);
       pageContext.setAttribute("xmlTitle", b2Context.getResourceString("page.system.tools.action.xml"));
   %>
@@ -94,10 +92,6 @@
           <bbNG:listActionItem title="${bundle['page.system.services.action.enable']}" url="JavaScript: doAction('${DoEnable}');" />
           <bbNG:listActionItem title="${bundle['page.system.services.action.disable']}" url="JavaScript: doAction('${DoDisable}');" />
         </bbNG:listActionMenu>
-        <bbNG:listActionMenu title="${bundle['page.system.services.action.requests']}">
-          <bbNG:listActionItem title="${bundle['page.system.services.action.signed']}" url="JavaScript: doAction('${DoSigned}');" />
-          <bbNG:listActionItem title="${bundle['page.system.services.action.unsigned']}" url="JavaScript: doAction('${DoUnsigned}');" />
-        </bbNG:listActionMenu>
         <bbNG:listActionItem title="${bundle['page.system.tools.action.delete']}" url="JavaScript: doDelete('${DoDelete}');" />
       </bbNG:listActionBar>
       <bbNG:jspBlock>
@@ -111,19 +105,6 @@
         <img src="${imageFiles[service.isEnabled]}" alt="${bundle[imageAlt[alt]]}" title="${bundle[imageAlt[alt]]}" />
       </bbNG:listElement>
       <%
-          String signed;
-          if (service.getIsUnsigned().equals(Constants.DATA_TRUE)) {
-              signed = Constants.DATA_FALSE;
-          } else {
-              signed = Constants.DATA_TRUE;
-          }
-          pageContext.setAttribute("signed", signed);
-          pageContext.setAttribute("alt", Constants.SERVICE_UNSIGNED + "." + service.getIsUnsigned());
-      %>
-      <bbNG:listElement isRowHeader="false" label="${bundle['page.system.services.signed.label']}" name="issigned">
-        <img src="${imageFiles[signed]}" alt="${bundle[imageAlt[alt]]}" title="${bundle[imageAlt[alt]]}" />
-      </bbNG:listElement>
-      <%
           boolean enabled = service.getIsEnabled().equals(Constants.DATA_TRUE);
           if (enabled) {
               pageContext.setAttribute("statusTitle", b2Context.getResourceString("page.system.services.action.disable"));
@@ -131,14 +112,6 @@
           } else {
               pageContext.setAttribute("statusTitle", b2Context.getResourceString("page.system.services.action.enable"));
               pageContext.setAttribute("statusAction", Constants.ACTION_ENABLE);
-          }
-          boolean unsigned = service.getIsUnsigned().equals(Constants.DATA_TRUE);
-          if (unsigned) {
-              pageContext.setAttribute("requestTitle", b2Context.getResourceString("page.system.services.action.signed"));
-              pageContext.setAttribute("requestAction", Constants.ACTION_SIGNED);
-          } else {
-              pageContext.setAttribute("requestTitle", b2Context.getResourceString("page.system.services.action.unsigned"));
-              pageContext.setAttribute("requestAction", Constants.ACTION_UNSIGNED);
           }
       %>
       <bbNG:listElement isRowHeader="true" label="${bundle['page.system.tools.name.label']}" name="name">
@@ -148,24 +121,21 @@
             List<SettingDef> settings = service.getSettings();
             if (ServiceList.isStandardService(service.getClassName())) {
         %>
-        <bbNG:listContextMenu order="status,request">
+        <bbNG:listContextMenu order="status">
           <bbNG:contextMenuItem title="${statusTitle}" url="JavaScript: doAction('${statusAction}');" id="status" />
-          <bbNG:contextMenuItem title="${requestTitle}" url="JavaScript: doAction('${requestAction}');" id="request" />
         </bbNG:listContextMenu>
         <%
         } else if (settings.isEmpty()) {
         %>
-        <bbNG:listContextMenu order="status,request,*separator*,delete">
+        <bbNG:listContextMenu order="status,*separator*,delete">
           <bbNG:contextMenuItem title="${statusTitle}" url="JavaScript: doAction('${statusAction}');" id="status" />
-          <bbNG:contextMenuItem title="${requestTitle}" url="JavaScript: doAction('${requestAction}');" id="request" />
           <bbNG:contextMenuItem title="${bundle['page.system.tools.action.delete']}" url="JavaScript: doDelete();" id="delete" />
         </bbNG:listContextMenu>
         <%
         } else {
         %>
-        <bbNG:listContextMenu order="status,request,*separator*,settings,*separator*,delete">
+        <bbNG:listContextMenu order="status,*separator*,settings,*separator*,delete">
           <bbNG:contextMenuItem title="${statusTitle}" url="JavaScript: doAction('${statusAction}');" id="status" />
-          <bbNG:contextMenuItem title="${requestTitle}" url="JavaScript: doAction('${requestAction}');" id="request" />
           <bbNG:contextMenuItem title="${bundle['page.system.services.action.settings']}" url="servicesettings.jsp?${id}&${query}" id="settings" />
           <bbNG:contextMenuItem title="${bundle['page.system.tools.action.delete']}" url="JavaScript: doDelete();" id="delete" />
         </bbNG:listContextMenu>

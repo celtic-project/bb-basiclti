@@ -176,8 +176,6 @@ public class Constants {
     public static final String ACTION_MASHUP = "domashup";
     public static final String ACTION_NOMASHUP = "nomashup";
     public static final String ACTION_NOMENU = "nomenu";
-    public static final String ACTION_SIGNED = "signed";
-    public static final String ACTION_UNSIGNED = "unsigned";
 
 // BasicLTI XML names
     public static final String XML_ROOT = "basic_lti_link";
