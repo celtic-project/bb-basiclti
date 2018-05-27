@@ -5,7 +5,7 @@
     <description value="plugin.description" />
     <handle value="BasicLTI" />
     <default-locale value="en_US" />
-    <version value="3.3.2" />
+    <version value="3.3.3" />
     <webapp-type value="javaext" />
     <requires>
       <bbversion value="9.1.100401.0" />
