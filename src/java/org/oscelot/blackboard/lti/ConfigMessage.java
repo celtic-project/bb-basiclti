@@ -79,7 +79,7 @@ public class ConfigMessage extends LtiMessage {
                 paramName = item[0];
                 if (paramName.length() > 0) {
                     if (item.length > 1) {
-                        value = Utils.parseParameter(b2Context, this.props, this.user, this.course, this.content, this.tool, item[1]);
+                        value = Utils.parseParameter(b2Context, this.props, this.tool, item[1]);
                     } else {
                         value = "";
                     }
