@@ -341,6 +341,34 @@ public class Utils {
     }
 
 // ---------------------------------------------------
+// Function to get a context ID value
+    public static Course ltiContextId2Course(Tool tool, String contextId) {
+
+        Course course = null;
+        if (contextId != null) {
+            try {
+                BbPersistenceManager bbPm = PersistenceServiceFactory.getInstance().getDbPersistenceManager();
+                CourseDbLoader courseLoader = (CourseDbLoader) bbPm.getLoader(CourseDbLoader.TYPE);
+                String contextIdType = tool.getContextIdType();
+                if (contextIdType.equals(Constants.DATA_PRIMARYKEY)) {
+                    course = courseLoader.loadById(Id.generateId(Course.DATA_TYPE, contextId));
+                } else if (contextIdType.equals(Constants.DATA_COURSEID)) {
+                    course = courseLoader.loadByCourseId(contextId);
+                } else if (contextIdType.equals(Constants.DATA_UUID) && B2Context.getIsVersion(9, 1, 13)) {
+                    course = courseLoader.loadByUuid(contextId);
+                } else {
+                    course = courseLoader.loadByBatchUid(contextId);
+                }
+            } catch (PersistenceException e) {
+                B2Context.log(true, null, (Object) e);
+            }
+        }
+
+        return course;
+
+    }
+
+// ---------------------------------------------------
 // Function to get a course role with an option for replacing any admin-defined roles with
 // a standard system role (either Instructor or Teaching Assistant).
     public static Role getRole(Role role, boolean systemRolesOnly) {

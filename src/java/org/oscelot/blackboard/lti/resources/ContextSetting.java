@@ -104,11 +104,19 @@ public class ContextSetting extends Resource {
             }
         }
 
+        Course course = null;
+        if (ok) {
+            course = Utils.ltiContextId2Course(this.getService().getTool(), contextId);
+            ok = course != null;
+            if (!ok) {
+                response.setCode(400);
+            }
+        }
         if (ok) {
             SystemSetting systemSetting = null;
             Properties contextSettings;
             Properties systemSettings = null;
-            contextSettings = Setting.stringToProperties(getSettingsString(b2Context, contextId));
+            contextSettings = Setting.stringToProperties(getSettingsString(b2Context, course.getId()));
             if (bubble != null) {
                 systemSetting = new SystemSetting(this.getService());
                 systemSetting.params = new HashMap<String, String>();
@@ -169,7 +177,7 @@ public class ContextSetting extends Resource {
                             sep = "\n";
                         }
                     }
-                    ok = setSettingsString(b2Context, contextId, custom.toString());
+                    setSettingsString(b2Context, course.getId(), custom.toString());
                 }
                 if (!ok) {
                     response.setCode(406);
@@ -179,34 +187,25 @@ public class ContextSetting extends Resource {
 
     }
 
-    protected String getSettingsString(B2Context b2Context, String contextId) {
+    protected String getSettingsString(B2Context b2Context, Id contextId) {
 
         String settingsString;
         String settingPrefix = Constants.TOOL_PARAMETER_PREFIX + "." + this.getService().getTool().getId() + "." + Constants.SERVICE_PARAMETER_PREFIX + "." + this.getService().getId() + ".custom";
-        if (b2Context.setCourseId(contextId)) {
-            b2Context.setIgnoreContentContext(true);
-            settingsString = b2Context.getSetting(false, true, settingPrefix, "");
-        } else {
-            settingsString = "";
-        }
+        b2Context.setCourseId(contextId);
+        b2Context.setIgnoreContentContext(true);
+        settingsString = b2Context.getSetting(false, true, settingPrefix, "");
 
         return settingsString;
 
     }
 
-    private boolean setSettingsString(B2Context b2Context, String contextId, String custom) {
+    private void setSettingsString(B2Context b2Context, Id contextId, String custom) {
 
-        boolean ok = true;
         String settingPrefix = Constants.TOOL_PARAMETER_PREFIX + "." + this.getService().getTool().getId() + "." + Constants.SERVICE_PARAMETER_PREFIX + "." + this.getService().getId() + ".custom";
-        if (b2Context.setCourseId(contextId)) {
-            b2Context.setIgnoreContentContext(true);
-            b2Context.setSetting(false, true, settingPrefix, custom);
-            b2Context.persistSettings(false, true);
-        } else {
-            ok = false;
-        }
-
-        return ok;
+        b2Context.setCourseId(contextId);
+        b2Context.setIgnoreContentContext(true);
+        b2Context.setSetting(false, true, settingPrefix, custom);
+        b2Context.persistSettings(false, true);
 
     }
 
