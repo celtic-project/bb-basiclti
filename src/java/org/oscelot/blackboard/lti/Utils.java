@@ -311,7 +311,7 @@ public class Utils {
 
 // ---------------------------------------------------
 // Function to get a context ID value
-    public static String getLTIContextId(B2Context b2Context, Course course, Tool tool) {
+    public static String course2ltiContextId(B2Context b2Context, Tool tool, Course course) {
 
         String contextId = null;
         if (course != null) {

@@ -217,7 +217,7 @@ public class ContextSetting extends Resource {
         if (course != null) {
             String url = this.getEndpoint();
             url = url.replaceAll("\\{context_type\\}", "CourseSection");
-            url = url.replaceAll("\\{context_id\\}", Utils.getLTIContextId(b2Context, course, this.getService().getTool()));
+            url = url.replaceAll("\\{context_id\\}", Utils.course2ltiContextId(b2Context, this.getService().getTool(), course));
             url = url.replaceAll("\\{vendor_code\\}", this.getService().getB2Context().getVendorId());
             url = url.replaceAll("\\{product_code\\}", this.getService().getTool().getId());
             value = value.replaceAll("\\$ToolProxyBinding.custom.url", url);

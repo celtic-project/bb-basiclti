@@ -151,16 +151,7 @@ public class LtiMessage {
                 contentId = "";
             }
             this.props.setProperty("context_type", "CourseSection");
-            String contextIdType = this.tool.getContextIdType();
-            if (contextIdType.equals(Constants.DATA_PRIMARYKEY)) {
-                resourceId = this.course.getId().toExternalString();
-            } else if (contextIdType.equals(Constants.DATA_COURSEID)) {
-                resourceId = this.course.getCourseId();
-            } else if (contextIdType.equals(Constants.DATA_UUID) && B2Context.getIsVersion(9, 1, 13)) {
-                resourceId = this.course.getUuid();
-            } else {
-                resourceId = this.course.getBatchUid();
-            }
+            resourceId = Utils.course2ltiContextId(b2Context, this.tool, this.course);
             if (context.hasGroupContext()) {
                 this.props.setProperty("context_type", "Group");
                 if (resourceId != null) {
