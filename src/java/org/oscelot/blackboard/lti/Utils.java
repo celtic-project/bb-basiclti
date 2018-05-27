@@ -292,17 +292,19 @@ public class Utils {
 // Function to get a user ID value
     public static String getLTIUserId(String userIdType, User user) {
 
-        String userId;
-        if (userIdType.equals(Constants.DATA_USERNAME)) {
-            userId = user.getUserName();
-        } else if (userIdType.equals(Constants.DATA_PRIMARYKEY)) {
-            userId = user.getId().toExternalString();
-        } else if (userIdType.equals(Constants.DATA_STUDENTID)) {
-            userId = user.getStudentId();
-        } else if (userIdType.equals(Constants.DATA_UUID) && B2Context.getIsVersion(9, 1, 13)) {
-            userId = user.getUuid();
-        } else {
-            userId = user.getBatchUid();
+        String userId = "";
+        if (user != null) {
+            if (userIdType.equals(Constants.DATA_USERNAME)) {
+                userId = user.getUserName();
+            } else if (userIdType.equals(Constants.DATA_PRIMARYKEY)) {
+                userId = user.getId().toExternalString();
+            } else if (userIdType.equals(Constants.DATA_STUDENTID)) {
+                userId = user.getStudentId();
+            } else if (userIdType.equals(Constants.DATA_UUID) && B2Context.getIsVersion(9, 1, 13)) {
+                userId = user.getUuid();
+            } else {
+                userId = user.getBatchUid();
+            }
         }
 
         return userId;
