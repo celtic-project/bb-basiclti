@@ -332,8 +332,8 @@ public class Utils {
                 B2Context.log(true, null, (Object) e);
             }
         }
-        if (b2Context.getContext().hasGroupContext() && (contextId != null)) {
-            contextId += Constants.PREFIX_GROUP + b2Context.getContext().getGroupId().toExternalString();
+        if (b2Context.hasGroupContext() && (contextId != null)) {
+            contextId += Constants.PREFIX_GROUP + b2Context.getGroupId().toExternalString();
         }
 
         return contextId;
@@ -606,8 +606,9 @@ public class Utils {
 
 // ---------------------------------------------------
 // Function to replace placeholders with user or course properties
-    public static String parseParameter(B2Context b2Context, Properties props, User user, Course course, Content content, Tool tool, String value) {
+    public static String parseParameter(B2Context b2Context, Properties props, Tool tool, String value) {
 
+        User user = b2Context.getUser();
         if (value.contains("$User.")) {
             if (tool.getDoSendUserId()) {
                 value = value.replaceAll("\\$User.id", props.getProperty("user_id"));
@@ -669,6 +670,8 @@ public class Utils {
                 value = value.replaceAll("\\$Membership.role", props.getProperty("roles"));
             }
         }
+        Course course = b2Context.getCourse();
+        Content content = b2Context.getContent();
         String oldContextId = null;
         if ((course != null) && value.contains("$Context.")) {
             if (tool.getDoSendContextId()) {

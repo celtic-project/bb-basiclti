@@ -53,7 +53,7 @@ public class LaunchMessage extends LtiMessage {
             contentId = "";
         }
         StringBuilder query = new StringBuilder();
-        if (this.course != null) {
+        if (b2Context.hasCourseContext()) {
             query.append(Constants.TOOL_ID).append("=").append(this.tool.getId()).append("&");
             query.append("course_id=").append(courseId).append("&");
             if (groupId.length() > 0) {
@@ -96,7 +96,7 @@ public class LaunchMessage extends LtiMessage {
         }
 
         if (module != null) {
-            if (this.course == null) {
+            if (!b2Context.hasCourseContext()) {
                 returnUrl += Constants.TOOL_MODULE + "=" + module.getId().toExternalString() + "&"
                         + Constants.TOOL_ID + "=" + this.tool.getId() + "&"
                         + Constants.TAB_PARAMETER_NAME + "=" + b2Context.getRequestParameter(Constants.TAB_PARAMETER_NAME, "");
@@ -116,7 +116,7 @@ public class LaunchMessage extends LtiMessage {
                 }
             } catch (PersistenceException e) {
             }
-        } else if (this.course == null) {
+        } else if (!b2Context.hasCourseContext()) {
             returnUrl
                     += Constants.TOOL_ID + "=" + this.tool.getId()
                     + "&" + Constants.TAB_PARAMETER_NAME + "=" + b2Context.getRequestParameter(Constants.TAB_PARAMETER_NAME, "");
@@ -140,7 +140,7 @@ public class LaunchMessage extends LtiMessage {
         serviceData.add(this.tool.getId(true));
         String time = Integer.toString((int) (System.currentTimeMillis() / 1000));
         String hashId = Utils.getServiceId(serviceData, time, this.tool.getSendUUID());
-        if ((this.course != null) && this.tool.getSendUserId().equals(Constants.DATA_MANDATORY)) {
+        if (b2Context.hasCourseContext()) {
             if (this.tool.getDoSendOutcomesService()) {
                 this.props.setProperty("ext_ims_lis_basic_outcome_url", extensionUrl);
                 this.props.setProperty("ext_ims_lis_resultvalue_sourcedids", "decimal,percentage,ratio,passfail,letteraf,letterafplus,freetext");
@@ -156,7 +156,7 @@ public class LaunchMessage extends LtiMessage {
                     this.props.setProperty("lis_result_sourcedid", userHashId);
                 }
             }
-            if (this.tool.getDoSendMembershipsService()) {
+            if (this.tool.getDoSendMembershipsService() && this.tool.getSendUserId().equals(Constants.DATA_MANDATORY)) {
                 this.props.setProperty("ext_ims_lis_memberships_id", hashId);
                 this.props.setProperty("ext_ims_lis_memberships_url", extensionUrl);
             }

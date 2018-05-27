@@ -213,7 +213,7 @@ public class ContextSetting extends Resource {
     public String parseValue(String value) {
 
         B2Context b2Context = this.getService().getB2Context();
-        Course course = b2Context.getContext().getCourse();
+        Course course = b2Context.getCourse();
         if (course != null) {
             String url = this.getEndpoint();
             url = url.replaceAll("\\{context_type\\}", "CourseSection");

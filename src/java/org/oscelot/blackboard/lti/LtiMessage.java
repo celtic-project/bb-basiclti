@@ -69,9 +69,6 @@ import com.spvsoftwareproducts.blackboard.utils.B2Context;
 
 public class LtiMessage {
 
-    protected User user = null;
-    protected Course course = null;
-    protected Content content = null;
     public Tool tool = null;
     protected String toolPrefix = null;
     protected String settingPrefix = null;
@@ -80,6 +77,8 @@ public class LtiMessage {
 
     public LtiMessage(B2Context b2Context, Tool tool, Module module) {
 
+        User user = b2Context.getUser();
+        Course course = null;
         Context context = b2Context.getContext();
 
         this.tool = tool;
@@ -101,16 +100,15 @@ public class LtiMessage {
         props.setProperty("lti_version", Constants.LTI_VERSION);
 
 // User parameters
-        this.user = context.getUser();
         if (this.tool.getDoSendUserId()) {
-            String userId = Utils.getLTIUserId(this.tool.getUserIdType(), this.user);
+            String userId = Utils.getLTIUserId(this.tool.getUserIdType(), user);
             if (userId != null) {
                 this.props.setProperty("user_id", userId);
             }
         }
         try {
             if (MyPlacesUtil.avatarsEnabled() && Utils.displayAvatar(user.getId()) && this.tool.getDoSendAvatar()) {
-                String image = MyPlacesUtil.getAvatarImage(this.user.getId());
+                String image = MyPlacesUtil.getAvatarImage(user.getId());
                 if (image != null) {
                     this.props.setProperty("user_image", b2Context.getServerUrl() + image);
                 }
@@ -119,25 +117,25 @@ public class LtiMessage {
         }
 
         if (this.tool.getDoSendUsername()) {
-            this.props.setProperty("lis_person_name_given", this.user.getGivenName());
-            this.props.setProperty("lis_person_name_family", this.user.getFamilyName());
-            String fullname = this.user.getGivenName();
-            if ((this.user.getMiddleName() != null) && (this.user.getMiddleName().length() > 0)) {
-                fullname += " " + this.user.getMiddleName();
+            this.props.setProperty("lis_person_name_given", user.getGivenName());
+            this.props.setProperty("lis_person_name_family", user.getFamilyName());
+            String fullname = user.getGivenName();
+            if ((user.getMiddleName() != null) && (user.getMiddleName().length() > 0)) {
+                fullname += " " + user.getMiddleName();
             }
-            fullname += " " + this.user.getFamilyName();
+            fullname += " " + user.getFamilyName();
             this.props.setProperty("lis_person_name_full", fullname);
         }
         if (this.tool.getDoSendEmail()) {
-            this.props.setProperty("lis_person_contact_email_primary", this.user.getEmailAddress());
+            this.props.setProperty("lis_person_contact_email_primary", user.getEmailAddress());
         }
         if (this.tool.getDoSendUserSourcedid()) {
-            this.props.setProperty("lis_person_sourcedid", this.user.getBatchUid());
+            this.props.setProperty("lis_person_sourcedid", user.getBatchUid());
         }
 
 // Course parameters
         if (!b2Context.getIgnoreCourseContext()) {
-            this.course = context.getCourse();
+            course = b2Context.getCourse();
         }
         String roles = "";
         boolean systemRolesOnly = !b2Context.getSetting(Constants.TOOL_COURSE_ROLES, Constants.DATA_FALSE).equals(Constants.DATA_TRUE);
@@ -145,21 +143,21 @@ public class LtiMessage {
         boolean emulateCore = this.tool.getDoEmulateCore();
         String contextId = "";
         String resourceId = "";
-        if (this.course != null) {
+        if (course != null) {
             String contentId = b2Context.getRequestParameter("content_id", "");
             if (contentId.equals("@X@content.pk_string@X@")) {
                 contentId = "";
             }
             this.props.setProperty("context_type", "CourseSection");
-            resourceId = Utils.course2ltiContextId(b2Context, this.tool, this.course);
-            if (context.hasGroupContext()) {
+            resourceId = Utils.course2ltiContextId(b2Context, this.tool, course);
+            if (b2Context.hasGroupContext()) {
                 this.props.setProperty("context_type", "Group");
                 if (resourceId != null) {
-                    resourceId += Constants.PREFIX_GROUP + context.getGroupId().toExternalString();
+                    resourceId += Constants.PREFIX_GROUP + b2Context.getGroupId().toExternalString();
                 }
                 if (this.tool.getDoSendContextTitle()) {
-                    this.props.setProperty("context_title", Utils.stripTags(context.getGroup().getTitle()));
-                    this.props.setProperty("context_label", context.getGroup().getTitle());
+                    this.props.setProperty("context_title", Utils.stripTags(b2Context.getGroup().getTitle()));
+                    this.props.setProperty("context_label", b2Context.getGroup().getTitle());
                 }
             } else if (this.tool.getDoSendContextTitle()) {
                 this.props.setProperty("context_title", Utils.stripTags(course.getTitle()));
@@ -172,18 +170,14 @@ public class LtiMessage {
             String description = "";
             if (contentId.length() > 0) {
                 resourceId += contentId;
-                BbPersistenceManager bbPm = PersistenceServiceFactory.getInstance().getDbPersistenceManager();
-                try {
-                    Id id = bbPm.generateId(Content.DATA_TYPE, contentId);
-                    ContentDbLoader courseDocumentLoader = (ContentDbLoader) bbPm.getLoader(ContentDbLoader.TYPE);
-                    this.content = courseDocumentLoader.loadById(id);
-                    title = this.content.getTitle();
-                    description = this.content.getBody().getText();
-                } catch (PersistenceException e) {
+                Content content = b2Context.getContent();
+                if (content != null) {
+                    title = content.getTitle();
+                    description = content.getBody().getText();
                 }
-            } else if (context.hasGroupContext()) {
-                title = context.getGroup().getTitle();
-                description = context.getGroup().getDescription().getText();
+            } else if (b2Context.hasGroupContext()) {
+                title = b2Context.getGroup().getTitle();
+                description = b2Context.getGroup().getDescription().getText();
             } else if (module != null) {
                 resourceId = Constants.PREFIX_MODULE + resourceId;
                 title = module.getTitle();
@@ -196,8 +190,8 @@ public class LtiMessage {
                 this.props.setProperty("resource_link_description", Utils.stripTags(description));
             }
             if (this.tool.getDoSendContextSourcedid()) {
-                this.props.setProperty("lis_course_offering_sourcedid", this.course.getBatchUid());
-                this.props.setProperty("lis_course_section_sourcedid", this.course.getBatchUid());
+                this.props.setProperty("lis_course_offering_sourcedid", course.getBatchUid());
+                this.props.setProperty("lis_course_section_sourcedid", course.getBatchUid());
             }
 
             if (this.tool.getDoSendRoles()) {
@@ -237,7 +231,7 @@ public class LtiMessage {
         this.props.setProperty("resource_link_id", resourceId);
         if (this.tool.getDoSendRoles()) {
             if (this.tool.getDoSendORoles()) {
-                List<User> observed = Utils.getObservedUsers(this.user.getId(), this.course.getId());
+                List<User> observed = Utils.getObservedUsers(user.getId(), course.getId());
                 if (!observed.isEmpty()) {
                     if (roles.length() > 0) {
                         roles += ",";
@@ -262,12 +256,12 @@ public class LtiMessage {
                 roles = Constants.IROLE_GUEST;
             }
             if (sendAdminRole) {
-                roles = Utils.addAdminRole(roles, this.user);
+                roles = Utils.addAdminRole(roles, user);
             }
-            roles = Utils.addPreviewRole(roles, this.user);
+            roles = Utils.addPreviewRole(roles, user);
             this.props.setProperty("roles", roles);
             if (this.tool.getDoSendIRoles()) {
-                List<PortalRole> iRoles = Utils.getInstitutionRoles(systemRolesOnly, this.user);
+                List<PortalRole> iRoles = Utils.getInstitutionRoles(systemRolesOnly, user);
                 StringBuilder iRolesString = new StringBuilder();
                 PortalRole role;
                 String sep = "";
@@ -279,9 +273,9 @@ public class LtiMessage {
                 this.props.setProperty("ext_institution_roles", iRolesString.toString());
             }
         }
-        if (this.course == null) {
+        if (course == null) {
             if (this.tool.getDoSendContextId() && B2Context.getIsVersion(9, 1, 8)) {
-                Id id = context.getUserId();
+                Id id = b2Context.getUserId();
                 if (id != Id.UNSET_ID) {
                     try {
                         List<Node> nodes = NodeManagerFactory.getAssociationManager().loadUserAssociatedNodes(id);
@@ -298,15 +292,15 @@ public class LtiMessage {
             this.props.setProperty("context_type", "Group");
             if (tool.getDoSendRoles()) {
                 boolean systemIRolesOnly = !b2Context.getSetting(Constants.TOOL_INSTITUTION_ROLES, Constants.DATA_FALSE).equals(Constants.DATA_TRUE);
-                List<PortalRole> iRoles = Utils.getInstitutionRoles(systemIRolesOnly, this.user);
+                List<PortalRole> iRoles = Utils.getInstitutionRoles(systemIRolesOnly, user);
                 sendAdminRole = b2Context.getSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_ADMINISTRATOR, Constants.DATA_FALSE).equals(Constants.DATA_TRUE);
-                roles = Utils.getIRoles(b2Context, iRoles, sendAdminRole && this.user.getSystemRole().equals(User.SystemRole.SYSTEM_ADMIN));
+                roles = Utils.getIRoles(b2Context, iRoles, sendAdminRole && user.getSystemRole().equals(User.SystemRole.SYSTEM_ADMIN));
                 if (sendAdminRole) {
-                    roles = Utils.addAdminRole(roles, this.user);
+                    roles = Utils.addAdminRole(roles, user);
                 }
-                roles = Utils.addPreviewRole(roles, this.user);
+                roles = Utils.addPreviewRole(roles, user);
                 this.props.remove("role_scope_mentor");
-                List<User> observed = Utils.getObservedUsers(this.user.getId(), null);
+                List<User> observed = Utils.getObservedUsers(user.getId(), null);
                 if (!observed.isEmpty()) {
                     if (roles.length() > 0) {
                         roles += ",";
@@ -335,7 +329,7 @@ public class LtiMessage {
             if (description.length() > 0) {
                 this.props.setProperty("resource_link_description", Utils.stripTags(description));
             }
-        } else if (this.course == null) {
+        } else if (course == null) {
             if (this.tool.getDoSendContextTitle()) {
                 this.props.setProperty("context_title", Utils.stripTags(ConfigurationServiceFactory.getInstance().getBbProperty(BbConfig.INST_NAME, "")));
                 this.props.setProperty("context_label", ConfigurationServiceFactory.getInstance().getBbProperty(BbConfig.INST_TYPE, ""));
@@ -360,7 +354,7 @@ public class LtiMessage {
 
         if (emulateCore) {
             if (b2Context.getRequest() != null) {
-                List<String> cssUrls = BrandingUtil.getCssUrls(b2Context.getRequest(), this.user, this.course, null,
+                List<String> cssUrls = BrandingUtil.getCssUrls(b2Context.getRequest(), user, course, null,
                         PersonalStyleHelper.isHighContrast(b2Context.getRequest()), !LocaleUtil.isLeftToRight());
                 if (cssUrls.size() > 0) {
                     StringBuilder cssUrl = new StringBuilder();
@@ -396,7 +390,7 @@ public class LtiMessage {
             }
         }
 
-        String locale = this.user.getLocale();
+        String locale = user.getLocale();
         if ((locale == null) || (locale.length() <= 0)) {
             locale = (String) context.getAttribute(Constants.LOCALE_ATTRIBUTE);
         }
