@@ -127,7 +127,7 @@ public class LinkSetting extends Resource {
                 contextSetting.params.put("context_id", b2Context.getCourseIdAsString());
                 contextSetting.params.put("vendor_code", b2Context.getVendorId());
                 contextSetting.params.put("product_code", this.getService().getTool().getId());
-                contextSettings = Setting.stringToProperties(contextSetting.getSettingsString(b2Context, b2Context.getCourseIdAsString()));
+                contextSettings = Setting.stringToProperties(contextSetting.getSettingsString(b2Context, b2Context.getCourseId()));
                 systemSetting = new SystemSetting(this.getService());
                 systemSettings = Setting.stringToProperties(systemSetting.getSettingsString(b2Context, this.getService().getTool().getId()));
                 if (bubble.equals("distinct")) {
