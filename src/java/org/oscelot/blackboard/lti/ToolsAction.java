@@ -40,11 +40,6 @@ public class ToolsAction extends HttpServlet {
 
         B2Context b2Context = new B2Context(request);
         Utils.initNode(b2Context, false, false);
-        if (b2Context.getNode() != null) {
-            B2Context.log(true, b2Context.getNode().getNodeId().toExternalString());
-        } else {
-            B2Context.log(true, "b2Context.getNode is null");
-        }
         String action = b2Context.getRequestParameter(Constants.ACTION, "");
         String[] ids = request.getParameterValues(Constants.TOOL_ID);
         boolean isDomain = b2Context.getRequestParameter(Constants.DOMAIN_PARAMETER_PREFIX, "").length() > 0;
