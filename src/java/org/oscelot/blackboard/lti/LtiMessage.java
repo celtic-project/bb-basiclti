@@ -23,7 +23,8 @@ package org.oscelot.blackboard.lti;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.AbstractMap;
 import java.util.Properties;
 import java.util.Iterator;
 import java.util.Collections;
@@ -64,6 +65,9 @@ import blackboard.platform.branding.PersonalStyleHelper;
 
 import blackboard.platform.institutionalhierarchy.service.Node;
 import blackboard.platform.institutionalhierarchy.service.NodeManagerFactory;
+
+import org.oscelot.blackboard.lti.resources.Resource;
+import org.oscelot.blackboard.lti.services.Service;
 
 import com.spvsoftwareproducts.blackboard.utils.B2Context;
 
@@ -490,7 +494,7 @@ public class LtiMessage {
 
     }
 
-    public List<Entry<String, String>> getParams() {
+    public List<Map.Entry<String, String>> getParams() {
 
         List<Map.Entry<String, String>> p;
         if (this.params != null) {
@@ -509,14 +513,72 @@ public class LtiMessage {
         if (this.params != null) {
             nvPairs = new NameValuePair[this.params.size()];
             int i = 0;
-            for (Iterator<Entry<String, String>> iter = this.params.iterator(); iter.hasNext();) {
-                Entry<String, String> entry = iter.next();
+            for (Iterator<Map.Entry<String, String>> iter = this.params.iterator(); iter.hasNext();) {
+                Map.Entry<String, String> entry = iter.next();
                 nvPairs[i] = new NameValuePair(entry.getKey(), entry.getValue());
                 i++;
             }
         }
 
         return nvPairs;
+
+    }
+
+    protected final void addServiceCustomParameters(B2Context b2Context) {
+
+        Map<String, String> customParams = new HashMap<String, String>();
+        Service service;
+        List<Resource> resources;
+        Resource resource;
+        ServiceList services = new ServiceList(b2Context, false);
+        for (Iterator<Service> iter = services.getList().iterator(); iter.hasNext();) {
+            service = iter.next();
+            if (this.tool.getHasService(service.getId()).equals(Constants.DATA_TRUE)) {
+                service.setTool(tool);
+                resources = service.getResources();
+                for (Iterator<Resource> iter2 = resources.iterator(); iter2.hasNext();) {
+                    resource = iter2.next();
+                    customParams.putAll(resource.getCustomParameters(b2Context, this.props));
+                }
+            }
+        }
+        List paramList = new ArrayList<String>();
+        Map.Entry entry;
+        for (Iterator<Map.Entry<String, String>> iter = customParams.entrySet().iterator(); iter.hasNext();) {
+            entry = iter.next();
+            paramList.add(entry.getKey() + "=" + entry.getValue());
+        }
+        addParameters(b2Context, (String[]) paramList.toArray(new String[0]), false);
+
+    }
+
+    protected final void addParameters(B2Context b2Context, String[] items, boolean bothCases) {
+
+        String[] item;
+        String paramName;
+        String name;
+        String value;
+        for (int i = 0; i < items.length; i++) {
+            item = items[i].split("=", 2);
+            if (item.length > 0) {
+                paramName = item[0];
+                if (paramName.length() > 0) {
+                    if (item.length > 1) {
+                        value = Utils.parseParameter(b2Context, this.props, this.tool, item[1]);
+                    } else {
+                        value = "";
+                    }
+                    if (bothCases) {
+                        this.props.setProperty(Constants.CUSTOM_NAME_PREFIX + paramName, value);
+                    }
+                    name = paramName.toLowerCase(Locale.ENGLISH);
+                    name = name.replaceAll("[^a-z0-9]", "_");
+                    if (!bothCases || !name.equals(paramName)) {
+                        this.props.setProperty(Constants.CUSTOM_NAME_PREFIX + name, value);
+                    }
+                }
+            }
+        }
 
     }
 

@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Properties;
 
 import org.oscelot.blackboard.lti.Tool;
 import org.oscelot.blackboard.lti.Constants;
@@ -93,6 +94,12 @@ public abstract class Resource {
     public List<String> getVariables() {
 
         return this.variables;
+
+    }
+
+    public Map<String, String> getCustomParameters(B2Context b2Context, Properties props) {
+
+        return new HashMap<String, String>();
 
     }
 

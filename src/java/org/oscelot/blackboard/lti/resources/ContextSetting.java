@@ -79,6 +79,18 @@ public class ContextSetting extends Resource {
 
     }
 
+    @Override
+    public Map<String, String> getCustomParameters(B2Context b2Context, Properties props) {
+
+        Map<String, String> customParams = new HashMap<String, String>();
+        if (b2Context.hasCourseContext()) {
+            customParams.put("context_setting_url", "$ToolProxyBinding.custom.url");
+        }
+
+        return customParams;
+
+    }
+
     public void execute(B2Context b2Context, Response response) {
 
         Map<String, String> template = this.parseTemplate();

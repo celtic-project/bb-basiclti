@@ -27,7 +27,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Calendar;
+import java.util.Properties;
 
 import org.oscelot.blackboard.lti.Constants;
 import org.oscelot.blackboard.lti.Utils;
@@ -84,6 +86,16 @@ public class Profile extends Resource {
     public List<String> getFormats() {
 
         return Collections.unmodifiableList(FORMATS);
+
+    }
+
+    @Override
+    public Map<String, String> getCustomParameters(B2Context b2Context, Properties props) {
+
+        Map<String, String> customParams = new HashMap<String, String>();
+        customParams.put("tc_profile_url", "$ToolConsumerProfile.url");
+
+        return customParams;
 
     }
 

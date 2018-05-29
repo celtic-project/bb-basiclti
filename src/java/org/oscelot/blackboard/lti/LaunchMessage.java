@@ -22,7 +22,6 @@ package org.oscelot.blackboard.lti;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import blackboard.data.course.CourseMembership;
 import blackboard.persist.PersistenceException;
@@ -185,20 +184,10 @@ public class LaunchMessage extends LtiMessage {
             customParameters += "\ncontext_id_history=$Context.id.history";
             customParameters += "\nresource_link_id_history=$ResourceLink.id.history";
         }
-        if (this.tool.getHasService(Constants.RESOURCE_PROFILE).equals(Constants.DATA_TRUE)) {
-            customParameters += "\ntc_profile_url=$ToolConsumerProfile.url";
-        }
-        if (this.tool.getHasService(Constants.RESOURCE_SETTING).equals(Constants.DATA_TRUE)) {
-            customParameters += "\nsystem_setting_url=$ToolProxy.custom.url";
-            if (courseId.length() > 0) {
-                customParameters += "\ncontext_setting_url=$ToolProxyBinding.custom.url";
-            }
-            if (contentId.length() > 0) {
-                customParameters += "\nlink_setting_url=$LtiLink.custom.url";
-            }
-        }
         String[] items = customParameters.split("\\n");
         addParameters(b2Context, items, false);
+
+        addServiceCustomParameters(b2Context);
 
 // System-level settings
         customParameters = b2Context.getSetting(Constants.TOOL_PARAMETER_PREFIX + "." + this.tool.getId() + "." + Constants.SERVICE_PARAMETER_PREFIX + ".setting.custom", "");
@@ -221,36 +210,6 @@ public class LaunchMessage extends LtiMessage {
         }
         items = customParameters.split("\\n");
         addParameters(b2Context, items, true);
-
-    }
-
-    private void addParameters(B2Context b2Context, String[] items, boolean bothCases) {
-
-        String[] item;
-        String paramName;
-        String name;
-        String value;
-        for (int i = 0; i < items.length; i++) {
-            item = items[i].split("=", 2);
-            if (item.length > 0) {
-                paramName = item[0];
-                if (paramName.length() > 0) {
-                    if (item.length > 1) {
-                        value = Utils.parseParameter(b2Context, this.props, this.tool, item[1]);
-                    } else {
-                        value = "";
-                    }
-                    if (bothCases) {
-                        this.props.setProperty(Constants.CUSTOM_NAME_PREFIX + paramName, value);
-                    }
-                    name = paramName.toLowerCase(Locale.ENGLISH);
-                    name = name.replaceAll("[^a-z0-9]", "_");
-                    if (!bothCases || !name.equals(paramName)) {
-                        this.props.setProperty(Constants.CUSTOM_NAME_PREFIX + name, value);
-                    }
-                }
-            }
-        }
 
     }
 

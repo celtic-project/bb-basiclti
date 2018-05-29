@@ -78,6 +78,18 @@ public class LinkSetting extends Resource {
 
     }
 
+    @Override
+    public Map<String, String> getCustomParameters(B2Context b2Context, Properties props) {
+
+        Map<String, String> customParams = new HashMap<String, String>();
+        if (props.containsKey("resource_link_id")) {
+            customParams.put("link_setting_url", "$LtiLink.custom.url");
+        }
+
+        return customParams;
+
+    }
+
     public void execute(B2Context b2Context, Response response) {
 
         Map<String, String> template = this.parseTemplate();

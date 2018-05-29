@@ -20,8 +20,6 @@
  */
 package org.oscelot.blackboard.lti;
 
-import java.util.Locale;
-
 import blackboard.persist.PersistenceException;
 import blackboard.platform.session.BbSession;
 import blackboard.platform.session.BbSessionManagerServiceFactory;
@@ -69,6 +67,8 @@ public class ContentItemMessage extends LtiMessage {
         String[] items = customParameters.split("\\n");
         addParameters(b2Context, items, false);
 
+        addServiceCustomParameters(b2Context);
+
 // System-level settings
         customParameters = b2Context.getSetting(Constants.TOOL_PARAMETER_PREFIX + "." + this.tool.getId() + "." + Constants.SERVICE_PARAMETER_PREFIX + ".setting.custom", "");
         items = customParameters.split("\\n");
@@ -76,12 +76,6 @@ public class ContentItemMessage extends LtiMessage {
 
 // Context-level settings
         b2Context.setIgnoreContentContext(true);
-        customParameters = b2Context.getSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + Constants.SERVICE_PARAMETER_PREFIX + ".setting.custom", "");
-        items = customParameters.split("\\n");
-        addParameters(b2Context, items, true);
-
-// Link-level settings
-        b2Context.setIgnoreContentContext(false);
         customParameters = b2Context.getSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + Constants.SERVICE_PARAMETER_PREFIX + ".setting.custom", "");
         items = customParameters.split("\\n");
         addParameters(b2Context, items, true);
@@ -152,36 +146,6 @@ public class ContentItemMessage extends LtiMessage {
             value = "false";
         }
         this.addProperty("auto_create", value);
-
-    }
-
-    private void addParameters(B2Context b2Context, String[] items, boolean bothCases) {
-
-        String[] item;
-        String paramName;
-        String name;
-        String value;
-        for (int i = 0; i < items.length; i++) {
-            item = items[i].split("=", 2);
-            if (item.length > 0) {
-                paramName = item[0];
-                if (paramName.length() > 0) {
-                    if (item.length > 1) {
-                        value = Utils.parseParameter(b2Context, this.props, this.tool, item[1]);
-                    } else {
-                        value = "";
-                    }
-                    if (bothCases) {
-                        this.addProperty(Constants.CUSTOM_NAME_PREFIX + paramName, value);
-                    }
-                    name = paramName.toLowerCase(Locale.ENGLISH);
-                    name = name.replaceAll("[^a-z0-9]", "_");
-                    if (!bothCases || !name.equals(paramName)) {
-                        this.addProperty(Constants.CUSTOM_NAME_PREFIX + name, value);
-                    }
-                }
-            }
-        }
 
     }
 
