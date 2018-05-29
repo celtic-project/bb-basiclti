@@ -343,26 +343,42 @@ public class Utils {
     }
 
 // ---------------------------------------------------
-// Function to get a context ID value
+// Function to get a course from a context ID value
     public static Course ltiContextId2Course(Tool tool, String contextId) {
+
+        return ltiContextId2Course(tool, contextId, false);
+
+    }
+
+// ---------------------------------------------------
+// Function to get a course from a context ID value
+    public static Course ltiContextId2Course(Tool tool, String contextId, boolean allowPrimaryKey) {
 
         Course course = null;
         if (contextId != null) {
+            String contextIdType = tool.getContextIdType();
+            CourseDbLoader courseLoader = null;
             try {
                 BbPersistenceManager bbPm = PersistenceServiceFactory.getInstance().getDbPersistenceManager();
-                CourseDbLoader courseLoader = (CourseDbLoader) bbPm.getLoader(CourseDbLoader.TYPE);
-                String contextIdType = tool.getContextIdType();
-                if (contextIdType.equals(Constants.DATA_PRIMARYKEY)) {
-                    course = courseLoader.loadById(Id.generateId(Course.DATA_TYPE, contextId));
-                } else if (contextIdType.equals(Constants.DATA_COURSEID)) {
+                courseLoader = (CourseDbLoader) bbPm.getLoader(CourseDbLoader.TYPE);
+                if (contextIdType.equals(Constants.DATA_COURSEID)) {
                     course = courseLoader.loadByCourseId(contextId);
                 } else if (contextIdType.equals(Constants.DATA_UUID) && B2Context.getIsVersion(9, 1, 13)) {
                     course = courseLoader.loadByUuid(contextId);
-                } else {
+                } else if (contextIdType.equals(Constants.DATA_BATCHUID)) {
                     course = courseLoader.loadByBatchUid(contextId);
                 }
             } catch (PersistenceException e) {
-                B2Context.log(true, null, (Object) e);
+                if ((courseLoader == null) || !allowPrimaryKey) {
+                    B2Context.log(true, null, (Object) e);
+                }
+            }
+            if ((courseLoader != null) && (course == null) && (allowPrimaryKey || contextIdType.equals(Constants.DATA_PRIMARYKEY))) {
+                try {
+                    course = courseLoader.loadById(Id.generateId(Course.DATA_TYPE, contextId));
+                } catch (PersistenceException e) {
+                    B2Context.log(true, null, (Object) e);
+                }
             }
         }
 

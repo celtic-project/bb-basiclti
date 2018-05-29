@@ -106,7 +106,7 @@ public class ContextSetting extends Resource {
 
         Course course = null;
         if (ok) {
-            course = Utils.ltiContextId2Course(this.getService().getTool(), contextId);
+            course = Utils.ltiContextId2Course(this.getService().getTool(), contextId, true);
             ok = course != null;
             if (!ok) {
                 response.setCode(400);
