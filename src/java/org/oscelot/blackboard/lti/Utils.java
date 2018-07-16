@@ -1760,7 +1760,7 @@ public class Utils {
 
         String contextIds = "";
         String old = courseContext.getSetting(false, true, "x_courseid", "");
-        if ((old.length() > 0) && !contextIdType.equals(Constants.DATA_COURSEID)) {
+        if (old.length() > 0) {
             StringBuilder contexts = new StringBuilder();
             try {
                 BbPersistenceManager bbPm = PersistenceServiceFactory.getInstance().getDbPersistenceManager();
