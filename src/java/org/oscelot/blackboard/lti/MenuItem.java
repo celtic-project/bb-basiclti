@@ -62,7 +62,6 @@ public final class MenuItem {
             if (!this.tool.getMenu().equals(this.getMenu())) {
                 this.setMenu(this.tool.getMenu());
             }
-            this.setIsAvailable();
         }
         this.persist();
 
