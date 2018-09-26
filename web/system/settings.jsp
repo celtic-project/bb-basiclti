@@ -111,7 +111,11 @@
       params.put(Constants.TOOL_INSTITUTION_ROLES, b2Context.getSetting(Constants.TOOL_INSTITUTION_ROLES, Constants.DATA_FALSE));
       params.put(Constants.MASHUP_PARAMETER, b2Context.getSetting(Constants.MASHUP_PARAMETER, Constants.DATA_FALSE));
       if (B2Context.getIsVersion(9, 1, 8)) {
-          params.put(Constants.AVAILABILITY_PARAMETER + params.get(Constants.AVAILABILITY_PARAMETER), Constants.DATA_TRUE);
+          params.put(Constants.AVAILABILITY_PARAMETER + Constants.AVAILABILITY_DEFAULT_ON, Constants.DATA_FALSE);
+          params.put(Constants.AVAILABILITY_PARAMETER + Constants.AVAILABILITY_DEFAULT_OFF, Constants.DATA_FALSE);
+          params.put(Constants.AVAILABILITY_PARAMETER + Constants.AVAILABILITY_ALWAYS_ON, Constants.DATA_FALSE);
+          params.put(Constants.AVAILABILITY_PARAMETER + Constants.AVAILABILITY_ALWAYS_OFF, Constants.DATA_FALSE);
+          params.put(Constants.AVAILABILITY_PARAMETER + b2Context.getSetting(Constants.AVAILABILITY_PARAMETER, Constants.AVAILABILITY_DEFAULT_OFF), Constants.DATA_TRUE);
           params.put(Constants.AVAILABILITY_PARAMETER + Constants.AVAILABILITY_DEFAULT_ON + "label",
                   b2Context.getResourceString("page.system.settings.step3.availability." + Constants.AVAILABILITY_DEFAULT_ON));
           params.put(Constants.AVAILABILITY_PARAMETER + Constants.AVAILABILITY_DEFAULT_OFF + "label",
