@@ -46,7 +46,9 @@
               ContentDbLoader courseDocumentLoader = (ContentDbLoader) bbPm.getLoader(ContentDbLoader.TYPE);
               Id id = bbPm.generateId(Content.DATA_TYPE, contentId);
               Content content = courseDocumentLoader.loadById(id);
-              toolName = content.getTitle();
+              if (tool.getPrefix() == null) {
+                  toolName = content.getTitle();
+              }
               if (!content.getIsFolder() || content.getIsLesson()) {
                   id = content.getParentId();
                   contentId = id.toExternalString();
@@ -90,6 +92,7 @@
           if (params != null) {
       %>
       <script language="javascript" type="text/javascript">
+        //<![CDATA[
         function osc_doOnLoad() {
         <%
             if (!isIframe) {
@@ -113,6 +116,7 @@
           document.forms[0].submit();
         }
         window.onload = osc_doOnLoad;
+        //]]>
       </script>
       <%
           }
@@ -137,10 +141,10 @@
       <%
       } else {
       %>
-      <p>${bundle['page.tool.error']}<p>
-        <%
-            }
-        %>
+      <p>${bundle['page.error.introduction']}</p>
+      <%
+          }
+      %>
     </body>
   </html>
 </bbNG:includedPage>
