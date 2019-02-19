@@ -1308,6 +1308,7 @@ public class Utils {
                 tool = new Tool(b2Context, id, Constants.TOOL_ID + "." + toolId);
             } else if (b2Context.hasContentContext()) {  // check parent
                 B2Context parentContext = new B2Context();
+                parentContext.setCourseId(b2Context.getCourseId());
                 parentContext.setContentId(b2Context.getContent().getParentId());
                 id = parentContext.getSetting(false, true, Constants.TOOL_ID + "." + toolId + "." + Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_ID, "");
                 if (id.length() > 0) {
