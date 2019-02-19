@@ -209,7 +209,7 @@
                 } else if (container.equals("iframe")) {
                     body += "<iframe src=\"" + url + "\" title=\"" + Utils.htmlSpecialChars(Utils.stripTags(title)) + "\""
                             + getIParam("width", placement.getDisplayWidth(), "px")
-                            + getIParam("height", placement.getDisplayHeight(), "px") + " /></a>";
+                            + getIParam("height", placement.getDisplayHeight(), "px") + " allowfullscreen /></a>";
                 } else if (container.equals("window")) {
                     linkTag = "<a href=\"" + url + "\" title=\"" + Utils.htmlSpecialChars(Utils.stripTags(title)) + "\" target=\"" + placement.getWindowTarget() + "\">";
                 } else if (container.equals("popup") || container.equals("overlay")) {
@@ -240,7 +240,7 @@
                         body += "<iframe src=\"" + url + "\" title=\"" + Utils.htmlSpecialChars(Utils.stripTags(title)) + "\""
                                 + getIParam("width", placement.getDisplayWidth(), "px")
                                 + getIParam("height", placement.getDisplayHeight(), "px")
-                                + " />";
+                                + " allowfullscreen />";
                         url = "";
                     }
                 }
