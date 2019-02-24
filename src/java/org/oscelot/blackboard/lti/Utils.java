@@ -1304,14 +1304,16 @@ public class Utils {
         }
         if ((tool.getName().length() <= 0) && (tool.getUrl().length() <= 0)) {
             String id = b2Context.getSetting(false, true, Constants.TOOL_ID + "." + toolId + "." + Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_ID, "");
-            if (id.length() > 0) {
+            String url = b2Context.getSetting(false, true, Constants.TOOL_ID + "." + toolId + "." + Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_URL, "");
+            if ((id.length() > 0) || (url.length() > 0)) {
                 tool = new Tool(b2Context, id, Constants.TOOL_ID + "." + toolId);
             } else if (b2Context.hasContentContext()) {  // check parent
                 B2Context parentContext = new B2Context();
                 parentContext.setCourseId(b2Context.getCourseId());
                 parentContext.setContentId(b2Context.getContent().getParentId());
                 id = parentContext.getSetting(false, true, Constants.TOOL_ID + "." + toolId + "." + Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_ID, "");
-                if (id.length() > 0) {
+                url = parentContext.getSetting(false, true, Constants.TOOL_ID + "." + toolId + "." + Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_URL, "");
+                if ((id.length() > 0) || (url.length() > 0)) {
                     Map<String, String> settings = parentContext.getSettings(false, true);
                     Map.Entry<String, String> setting;
                     String prefix = Constants.TOOL_ID + "." + toolId + "." + Constants.TOOL_PARAMETER_PREFIX + ".";
