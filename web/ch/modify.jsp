@@ -165,7 +165,7 @@
       }
       if (!parent.getIsLesson()) {
         String paramName = Constants.TOOL_DESCRIPTION + "_";
-        FormattedText text = TextboxTag.getFormattedText(request, paramName);
+        FormattedText text = TextboxTag.getFormattedText(b2Context.getRequest(true), paramName);
         content.setBody(text);
       }
       if (!content.getRenderType().equals(Content.RenderType.DEFAULT)) {
