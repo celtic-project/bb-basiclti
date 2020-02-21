@@ -311,20 +311,6 @@
                         customString += sep + Utils.urlEncode(entry.getKey()) + "=" + Utils.urlEncode(entry.getValue());
                         sep = "\n";
                     }
-                    if (item.getUrl().length() <= 0) {
-                        b2Context.setSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_ID, toolId);
-                    } else {
-                        toolSettingPrefix = Constants.TOOL_PARAMETER_PREFIX + ".";
-                        b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_URL, item.getUrl());
-                    }
-                    String openin = Utils.displayTargetToOpenin(container);
-                    b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_OPEN_IN, openin);
-                    b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_CUSTOM, customString);
-                    b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_EXT_UUID,
-                            UUID.randomUUID().toString());
-                    if (item.getIcon() != null) {
-                        b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_ICON, item.getIcon().getId());
-                    }
                     LineItem lineItem = item.getLineItem();
                     if (lineItem != null) {
                         String outcomes_format = b2Context.getSetting(false, true, toolSettingPrefix + Constants.TOOL_EXT_OUTCOMES_FORMAT,
@@ -357,6 +343,20 @@
                                 b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_EXT_OUTCOMES_POINTS, String.valueOf(points));
                             }
                         }
+                    }
+                    if (item.getUrl().length() <= 0) {
+                        b2Context.setSetting(false, true, Constants.TOOL_PARAMETER_PREFIX + "." + Constants.TOOL_ID, toolId);
+                    } else {
+                        toolSettingPrefix = Constants.TOOL_PARAMETER_PREFIX + ".";
+                        b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_URL, item.getUrl());
+                    }
+                    String openin = Utils.displayTargetToOpenin(container);
+                    b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_OPEN_IN, openin);
+                    b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_CUSTOM, customString);
+                    b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_EXT_UUID,
+                            UUID.randomUUID().toString());
+                    if (item.getIcon() != null) {
+                        b2Context.setSetting(false, true, toolSettingPrefix + Constants.TOOL_ICON, item.getIcon().getId());
                     }
                     b2Context.persistSettings(false, true);
                 } else if (icon != null) {
