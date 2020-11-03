@@ -23,7 +23,6 @@
         import="java.util.List,
         java.util.Map,
         java.util.Iterator,
-        java.util.Locale,
         blackboard.platform.plugin.PlugInUtil,
         blackboard.portal.data.Module,
         com.spvsoftwareproducts.blackboard.utils.B2Context,
@@ -47,7 +46,7 @@
     String toolId = b2Context.getRequestParameter(Constants.TOOL_ID, "");
 
     if (request.getMethod().equalsIgnoreCase("POST")) {
-        String type = b2Context.getRequestParameter("type", "").toLowerCase(Locale.ENGLISH);
+        String type = b2Context.getRequestParameter("type", "").toLowerCase();
         String href = b2Context.getRequestParameter("href", "");
         String id = toolId;
         if (href.contains("?")) {
@@ -64,9 +63,6 @@
         }
         String text = b2Context.getRequestParameter("text", "");
         boolean hasSelectedText = text.length() > 0;
-        if (!hasSelectedText) {
-            text = tool.getName();
-        }
         message.setText(text);
         String title = b2Context.getRequestParameter("title", "");
         if (title.length() <= 0) {
@@ -169,19 +165,31 @@
         el = document.getElementById('id_tool');
         el.value = osc_getParamValue('id');
         var lti_el;
-        var isVTBE = (typeof window.opener.currentVTBE != 'undefined');
-        if (isVTBE) {
-          editor = window.opener.editors[window.opener.currentVTBE];
-          lti_el = editor.getParentElement();
-        } else {
-          var id = window.opener.tinyMceWrapper.currentEditorId;
-          if (((typeof id) != 'undefined') && (id != null)) {
-            editor = window.opener.tinyMceWrapper.editors.get(id);
-            editor = editor.getTinyMceEditor();
+        var isVTBE = false;
+        if (window.opener) {
+          isVTBE = (typeof window.opener.currentVTBE != 'undefined');
+          if (isVTBE) {
+            editor = window.opener.editors[window.opener.currentVTBE];
+            lti_el = editor.getParentElement();
+          } else {
+            var id = window.opener.tinyMceWrapper.currentEditorId;
+            if (((typeof id) != 'undefined') && (id != null)) {
+              editor = window.opener.tinyMceWrapper.editors.get(id);
+              editor = editor.getTinyMceEditor();
+              lti_el = editor.selection.getNode();
+            } else {
+              ok = false;
+            }
+          }
+        } else if (window.parent) {
+          if (window.parent.tinymce && window.parent.tinymce.activeEditor) {
+            editor = window.parent.tinymce.activeEditor;
             lti_el = editor.selection.getNode();
           } else {
             ok = false;
           }
+        } else {
+          ok = false;
         }
         var el_text = document.getElementById('id_text');
         var el_title = document.getElementById('id_title');
@@ -234,7 +242,7 @@
             } else {
               el_text.value = editor.selection.getContent({format: 'text'});
             }
-            if ((el_text.value == '') || (el_text.value.toLowerCase(Locale.ENGLISH) == '<p>&nbsp;</p>')) {
+            if ((el_text.value == '') || (el_text.value.toLowerCase() == '<p>&nbsp;</p>')) {
               el_text.value = '';
             }
             el_title.value = '';

@@ -52,9 +52,13 @@
       Node node = Utils.initNode(session, b2Context, false);
       String nodeId = "";
       String subTitle = "";
+      String updated = b2Context.getResourceString("page.system.tools.updated");
+      if (updated.length() > 0) {
+          subTitle = " (" + updated + ")";
+      }
       if (!b2Context.getIsRootNode()) {
           nodeId = "&" + Constants.NODE_PARAMETER + "=" + node.getNodeId().toExternalString();
-          subTitle = " [Node: " + node.getName() + "]";
+          subTitle += " [Node: " + node.getName() + "]";
       } else {
           Utils.checkSettings(b2Context);
       }

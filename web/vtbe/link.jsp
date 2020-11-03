@@ -24,7 +24,6 @@
         java.util.Map,
         java.util.HashMap,
         java.util.UUID,
-        java.util.Locale,
         blackboard.data.course.CourseMembership,
         blackboard.platform.plugin.PlugInUtil,
         com.spvsoftwareproducts.blackboard.utils.B2Context,
@@ -100,8 +99,7 @@
           String url = path + "?" + query + id;
           String embedHtml = "<a href=\"" + url + "\" title=\"" + title + "\">" + text + "</a>";
           request.setAttribute("embedHtml", embedHtml);
-          String embedUrl = PlugInUtil.getInsertToVtbePostUrl().replace(Constants.WYSIWYG_WEBAPP, "");
-          RequestDispatcher rd = getServletContext().getContext(Constants.WYSIWYG_WEBAPP).getRequestDispatcher(embedUrl);
+          RequestDispatcher rd = getServletContext().getRequestDispatcher("/vtbe/embed.jsp");
           rd.forward(request, response);
           return;
       }
@@ -151,6 +149,7 @@
       pageContext.setAttribute("serverQuery", query);
       pageContext.setAttribute("params", params);
       pageContext.setAttribute("path", b2Context.getPath());
+
   %>
   <bbNG:pageHeader instructions="${bundle['page.content.create.instructions']}">
     <bbNG:pageTitleBar iconUrl="../images/lti.gif" title="${title}" />
@@ -205,7 +204,7 @@
       function osc_setSelOption(value) {
         if (osc_sel.disabled && (value !== '${toolId}')) {
           alert('${bundle['page.vtbe.create.tool.error']}');
-          self.close();
+          doClose(false);
         }
         osc_setOption(osc_sel, value);
         osc_doOnSelChange();
@@ -222,14 +221,26 @@
         osc_el_title = document.getElementById('id_title');
         osc_custom = document.getElementById('id_custom');
         osc_openin = document.getElementById('id_openin');
-        var isVTBE = (typeof window.opener.currentVTBE != 'undefined');
-        if (isVTBE) {
-          editor = window.opener.editors[window.opener.currentVTBE];
-          osc_el = editor.getParentElement();
-        } else if ((typeof window.opener.tinyMceWrapper.currentEditorId != 'undefined') &&
-                (typeof window.opener.tinyMceWrapper.editors.get(window.opener.tinyMceWrapper.currentEditorId) != 'undefined')) {
-          editor = window.opener.tinyMceWrapper.editors.get(window.opener.tinyMceWrapper.currentEditorId).getTinyMceEditor();
-          osc_el = editor.selection.getNode();
+        var isVTBE = false;
+        if (window.opener) {
+          isVTBE = (typeof window.opener.currentVTBE != 'undefined');
+          if (isVTBE) {
+            editor = window.opener.editors[window.opener.currentVTBE];
+            osc_el = editor.getParentElement();
+          } else if ((typeof window.opener.tinyMceWrapper.currentEditorId != 'undefined') &&
+                  (typeof window.opener.tinyMceWrapper.editors.get(window.opener.tinyMceWrapper.currentEditorId) != 'undefined')) {
+            editor = window.opener.tinyMceWrapper.editors.get(window.opener.tinyMceWrapper.currentEditorId).getTinyMceEditor();
+            osc_el = editor.selection.getNode();
+          } else {
+            ok = false;
+          }
+        } else if (window.parent) {
+          if (window.parent.tinymce && window.parent.tinymce.activeEditor) {
+            editor = window.parent.tinymce.activeEditor;
+            osc_el = editor.selection.getNode();
+          } else {
+            ok = false;
+          }
         } else {
           ok = false;
         }
@@ -265,8 +276,8 @@
             } else {
               osc_el_text.value = editor.selection.getContent({format: 'text'});
             }
-            if ((osc_el_text.value == '') || (osc_el_text.value.toLowerCase(Locale.ENGLISH) == '<p>&nbsp;</p>')) {
-              osc_el_text.value = '${toolName}';
+            if (osc_el_text.value.toLowerCase() == '<p>&nbsp;</p>') {
+              osc_el_text.value = '';
             }
             osc_el_title.value = '${toolName}';
       <%
@@ -278,7 +289,6 @@
       %>
           }
         } else {
-          osc_el_text.value = '${toolName}';
           osc_el_title.value = '${toolName}';
       <%
           if (contentItemUrl.length() > 0) {
@@ -341,12 +351,21 @@
         osc_checkTool(osc_sel.value);
         osc_toolid.value = osc_sel.value;
       }
+
+      function doClose(closeWindow) {
+        if (!window.opener) {
+          parent.postMessage({mceAction: 'closeContentSelectorDialog'}, origin);
+          parent.postMessage({mceAction: 'closeAddContentDialog'}, origin);
+        } else if (closeWindow) {
+          window.close();
+        } else {
+          self.close();
+        }
+        return true;
+      }
       //]]>
     </script>
   </bbNG:jsBlock>
-  <%
-      if (contentItemUrl.length() <= 0) {
-  %>
   <bbNG:form action="link.jsp?course_id=${courseId}&content_id=${contentId}" method="post" onsubmit="return validateForm();" isSecure="true" nonceId="<%=formName%>">
     <bbNG:dataCollection markUnsavedChanges="true" showSubmitButtons="true">
       <bbNG:step hideNumber="false" title="${bundle['page.content.create.step1.title']}" instructions="${bundle['page.content.create.step1.instructions']}">
@@ -397,30 +416,18 @@
           </bbNG:selectElement>
         </bbNG:dataElement>
       </bbNG:step>
-      <bbNG:stepSubmit hideNumber="false" showCancelButton="true" cancelOnClick="self.close();" />
+      <bbNG:stepSubmit hideNumber="false" showCancelButton="true" cancelOnClick="return doClose(false);" />
     </bbNG:dataCollection>
   </bbNG:form>
   <%
-  } else {
-  %>
-  <form action="">
-    <input type="hidden" name="toolid" id="id_tool" value="<%=tool.getId()%>" />
-    <input type="hidden" name="<%=Constants.LINK_TEXT%>" id="id_toolid" value="<%=id%>" />
-    <input type="hidden" name="<%=Constants.LINK_TEXT%>" id="id_text" value="" />
-    <input type="hidden" name="<%=Constants.LINK_TITLE%>" id="id_title" value="" />
-    <input type="hidden" name="<%=Constants.TOOL_CUSTOM%>" id="custom" value="${params.custom}" />
-    <input type="hidden" name="<%=Constants.TOOL_OPEN_IN%>" id="id_openin" value="${params.openin}" />
-  </form>
-  <%
-      }
-  } else {
+    } else {
   %>
   <bbNG:form>
     <p>
-      <bbNG:button label="${bundle['page.close.window']}" onClick="window.close();" />
+      <bbNG:button label="${bundle['page.close.window']}" onClick="return doClose(true);" />
     </p>
   </bbNG:form>
   <%
-      }
+    }
   %>
 </bbNG:genericPage>

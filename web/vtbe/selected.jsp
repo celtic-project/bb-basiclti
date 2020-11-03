@@ -128,6 +128,7 @@
         String query;
         String floatDiv;
         String clear;
+        StringBuilder links = new StringBuilder();
         StringBuilder content = new StringBuilder();
         boolean wrap = resp.getContentItems().size() > 1;
         for (Iterator<ContentItem> iter = resp.getContentItems().iterator(); iter.hasNext();) {
@@ -288,17 +289,20 @@
                 } else if (wrap) {
                     body = "<p>" + body + "</p>";
                 }
+                links.append(linkTag + "</a>");
                 content.append(body);
             }
         }
         ok = content.length() > 0;
         if (ok) {
+            String linksHtml = JsResource.encode(links.toString());
             String embedHtml = JsResource.encode(content.toString());
 
 // Ensure that closing script tags inside a string don't foul up the script block below.
             embedHtml = Pattern.compile("</\\s*script\\s*>", Pattern.CASE_INSENSITIVE)
                     .matcher(embedHtml)
                     .replaceAll(Matcher.quoteReplacement("</scr\"+\"ipt>"));
+            pageContext.setAttribute("linksHtml", linksHtml);
             pageContext.setAttribute("embedHtml", embedHtml);
         }
     }
@@ -311,7 +315,7 @@
 %>
 <bbNG:genericPage title="${bundle['page.course_tool.tools.title']}" onLoad="${onload}">
   <bbNG:pageHeader>
-    <bbNG:pageTitleBar iconUrl="images/lti.gif" showTitleBar="true" title="${bundle['plugin.name']}"/>
+    <bbNG:pageTitleBar iconUrl="../images/lti.gif" showTitleBar="true" title="${bundle['plugin.name']}"/>
   </bbNG:pageHeader>
   <bbNG:jsBlock>
     <script language="javascript" type="text/javascript">
@@ -319,21 +323,68 @@
       <%
           if (ok) {
       %>
-      if (window.opener.tinyMceWrapper && window.opener.tinyMceWrapper.setMashupData) {
-        window.opener.tinyMceWrapper.setMashupData('${embedHtml}');
-      }
-      if (window.opener.currentTextArea) {
-        window.opener.currentTextArea.value += "<!-- Start Mashup --> ${embedHtml} <!-- End Mashup -->";
+        var ok = true;
+        var editor;
+        var isVTBE = false;
+        var hasSelection = false;
+        var html;
+        if (window.opener) {
+          isVTBE = (typeof window.opener.currentVTBE != 'undefined');
+          if (isVTBE) {
+            editor = window.opener.editors[window.opener.currentVTBE];
+          } else if ((typeof window.opener.tinyMceWrapper.currentEditorId != 'undefined') &&
+                  (typeof window.opener.tinyMceWrapper.editors.get(window.opener.tinyMceWrapper.currentEditorId) != 'undefined')) {
+            editor = window.opener.tinyMceWrapper.editors.get(window.opener.tinyMceWrapper.currentEditorId).getTinyMceEditor();
+          } else {
+            ok = false;
+          }
+        } else if (window.parent) {
+          if (window.parent.tinymce && window.parent.tinymce.activeEditor) {
+            editor = window.parent.tinymce.activeEditor;
+          } else {
+            ok = false;
+          }
+        } else {
+          ok = false;
+        }
+        if (ok) {
+          var selection;
+          if (isVTBE) {
+            selection = editor.getSelectedHTML();
+          } else {
+            selection = editor.selection.getContent({format: 'text'});
+          }
+          hasSelection = ((selection != '') && (selection.toLowerCase() != '<p>&nbsp;</p>'));
+        }
+        if (!hasSelection) {
+          html = "${embedHtml}";
+        } else {
+          html = '${linksHtml}'.replace(/\>\</g, ">" + selection + "<");
+        }
+        if (window.opener) {
+          if (window.opener.tinyMceWrapper && window.opener.tinyMceWrapper.setMashupData) {
+            window.opener.tinyMceWrapper.setMashupData(html);
+          }
+          if (window.opener.currentTextArea) {
+            window.opener.currentTextArea.value += html;
             window.opener.currentTextArea = null;
           }
-
+        } else {
+          parent.postMessage({mceAction: 'closeContentSelectorDialog'}, origin);
+          editor.execCommand('mceInsertContent', false, html);
+          parent.postMessage({mceAction: 'closeAddContentDialog'}, origin);
+        }
       <%
           }
       %>
-          function doAction() {
-            window.close();
-          }
-          //]]>
+      function doAction() {
+        if (window.opener) {
+          window.close();
+        } else {
+          parent.postMessage({mceAction: 'closeContentSelectorDialog'}, origin);
+        }
+      }
+      //]]>
     </script>
   </bbNG:jsBlock>
   <bbNG:form>
