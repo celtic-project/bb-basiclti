@@ -173,6 +173,8 @@ se<%--
                       b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_CONTEXT_SOURCEDID, Constants.DATA_FALSE));
               b2Context.setSetting(toolSettingPrefix + Constants.TOOL_CONTEXT_TITLE,
                       b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_CONTEXT_TITLE, Constants.DATA_FALSE));
+              b2Context.setSetting(toolSettingPrefix + Constants.TOOL_EXT_COPY_OF,
+                      b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_EXT_COPY_OF, Constants.DATA_FALSE));
               b2Context.setSetting(toolSettingPrefix + Constants.TOOL_USERID,
                       b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_USERID, Constants.DATA_NOTUSED));
               b2Context.setSetting(toolSettingPrefix + Constants.TOOL_USERIDTYPE,
@@ -187,6 +189,12 @@ se<%--
                       b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_AVATAR, Constants.DATA_FALSE));
               b2Context.setSetting(toolSettingPrefix + Constants.TOOL_ROLES,
                       b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_ROLES, Constants.DATA_FALSE));
+              b2Context.setSetting(toolSettingPrefix + Constants.TOOL_EXT_IROLES,
+                      b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_EXT_IROLES, Constants.DATA_FALSE));
+              b2Context.setSetting(toolSettingPrefix + Constants.TOOL_EXT_CROLES,
+                      b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_EXT_CROLES, Constants.DATA_FALSE));
+              b2Context.setSetting(toolSettingPrefix + Constants.TOOL_OBSERVER_ROLES,
+                      b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_OBSERVER_ROLES, Constants.DATA_FALSE));
               boolean systemRolesOnly = !b2Context.getSetting(Constants.TOOL_COURSE_ROLES, Constants.DATA_FALSE).equals(Constants.DATA_TRUE);
               for (Iterator<CourseRole> iter = Utils.getCourseRoles(systemRolesOnly).iterator(); iter.hasNext();) {
                   CourseRole role = iter.next();
@@ -195,6 +203,8 @@ se<%--
               }
               b2Context.setSetting(toolSettingPrefix + Constants.TOOL_ADMINISTRATOR,
                       b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_ADMINISTRATOR, Constants.DATA_FALSE));
+              b2Context.setSetting(toolSettingPrefix + Constants.TOOL_GUEST,
+                      b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_GUEST, Constants.DATA_FALSE));
 
               b2Context.setSetting(toolSettingPrefix + Constants.TOOL_OPEN_IN,
                       b2Context.getSetting(defaultToolSettingPrefix + Constants.TOOL_OPEN_IN, Constants.DATA_FRAME));
