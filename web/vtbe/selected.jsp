@@ -61,6 +61,7 @@
 %>
 <%
     B2Context b2Context = new B2Context(request);
+    Utils.checkInheritSettings(b2Context);
 
     String toolId = b2Context.getRequestParameter(Constants.TOOL_ID, "");
     String ltiLog = b2Context.getRequestParameter(Constants.LTI_LOG, "");
@@ -313,7 +314,7 @@
 
     pageContext.setAttribute("bundle", b2Context.getResourceStrings());
 %>
-<bbNG:genericPage title="${bundle['page.course_tool.tools.title']}" onLoad="${onload}">
+<bbNG:genericPage title="${bundle['page.course_tool.tools.title']}" authentication="N" onLoad="${onload}">
   <bbNG:pageHeader>
     <bbNG:pageTitleBar iconUrl="../images/lti.gif" showTitleBar="true" title="${bundle['plugin.name']}"/>
   </bbNG:pageHeader>
