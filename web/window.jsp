@@ -105,7 +105,11 @@
         <%
         } else {
         %>
-            window.opener.parent.location.href = '${url}';
+            if (window.opener.top.location.href.indexOf('/ultra/') >= 0) {
+              window.opener.location.href = '${url}';
+            } else {
+              window.opener.parent.location.href = '${url}';
+            }
         <%
             }
         %>
