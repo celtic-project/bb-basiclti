@@ -27,6 +27,7 @@
         java.util.UUID,
         java.util.Calendar,
         java.net.URL,
+        java.net.URLEncoder,
         java.net.MalformedURLException,
         blackboard.platform.persistence.PersistenceServiceFactory,
         blackboard.persist.BbPersistenceManager,
@@ -60,8 +61,8 @@
 
     String courseIdParamName = "course_id";
     String contentIdParamName = "content_id";
-    String courseId = b2Context.getRequestParameter(courseIdParamName, "");
-    String contentId = b2Context.getRequestParameter(contentIdParamName, "");
+    String courseId = URLEncoder.encode(b2Context.getRequestParameter(courseIdParamName, ""), "UTF-8");
+    String contentId = URLEncoder.encode(b2Context.getRequestParameter(contentIdParamName, ""), "UTF-8");
     String toolId = b2Context.getRequestParameter(Constants.TOOL_ID, "");
     String toolUrl = b2Context.getRequestParameter(Constants.TOOL_URL, "");
     String toolName = b2Context.getRequestParameter(Constants.TOOL_NAME, "");

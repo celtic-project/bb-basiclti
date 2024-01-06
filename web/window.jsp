@@ -20,7 +20,8 @@
 --%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <%@page contentType="text/html" pageEncoding="UTF-8"
-        import="blackboard.data.content.Content,
+        import="java.net.URLEncoder,
+        blackboard.data.content.Content,
         blackboard.persist.content.ContentDbLoader,
         blackboard.persist.BbPersistenceManager,
         blackboard.persist.Id,
@@ -31,11 +32,11 @@
 <%@include file="lti_props.jsp" %>
 <bbNG:includedPage entitlement="system.generic.VIEW">
   <%    String url = "";
-      String courseId = b2Context.getRequestParameter("course_id", "");
-      String contentId = b2Context.getRequestParameter("content_id", "");
-      String groupId = b2Context.getRequestParameter("group_id", "");
-      String tabId = b2Context.getRequestParameter(Constants.TAB_PARAMETER_NAME, "");
-      String cTabId = b2Context.getRequestParameter(Constants.COURSE_TAB_PARAMETER_NAME, "");
+      String courseId = URLEncoder.encode(b2Context.getRequestParameter("course_id", ""), "UTF-8");
+      String contentId = URLEncoder.encode(b2Context.getRequestParameter("content_id", ""), "UTF-8");
+      String groupId = URLEncoder.encode(b2Context.getRequestParameter("group_id", ""), "UTF-8");
+      String tabId = URLEncoder.encode(b2Context.getRequestParameter(Constants.TAB_PARAMETER_NAME, ""), "UTF-8");
+      String cTabId = URLEncoder.encode(b2Context.getRequestParameter(Constants.COURSE_TAB_PARAMETER_NAME, ""), "UTF-8");
       String sourcePage = b2Context.getRequestParameter(Constants.PAGE_PARAMETER_NAME, "");
       String mode = b2Context.getRequestParameter("mode", "");
       String toolName = tool.getName();
